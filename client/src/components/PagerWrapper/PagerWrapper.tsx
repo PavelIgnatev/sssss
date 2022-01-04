@@ -12,6 +12,8 @@ export const PagerWrapper: FC<PagerModel> = ({ state, prevState }) => {
 
   return (
     <>
+      <br />
+      <br />
       {prevState.map((e: any, index: any) => {
         return <Page key={index} state={state} prevState={e} />;
       })}
@@ -26,6 +28,14 @@ export const PagerWrapper: FC<PagerModel> = ({ state, prevState }) => {
       >
         Add new rules
       </button>
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
     </>
   );
 };
