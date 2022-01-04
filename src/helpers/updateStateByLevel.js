@@ -6,34 +6,34 @@ const {
 const { getDate } = require("./getDate");
 const { getTime } = require("./getTime");
 const updateStateByLevel = async () => {
-  const levels = ["6A", "6B", "7A", "7B"];
+  //"6A", "6B",
+  const levels = [ "7A", "7B"];
   const state = JSON.parse(await readFile("src/state/filtredState.json"));
   const gaps = JSON.parse(await readFile("src/state/gap.json"));
 
   const newState = [];
 
-  // const timezones = [
-  //   "-10800000",
-  //   "-46800000",
-  //   "-39600000",
-  //   "-36000000",
-  //   "-32400000",
-  //   "-28800000",
-  //   "-25200000",
-  //   "-23400000",
-  //   "-21600000",
-  //   "-18000000",
-  //   "-7200000",
-  //   "-3600000",
-  //   "0",
-  //   "9000000",
-  //   "18000000",
-  //   "21600000",
-  //   "23400000",
-  //   "25200000",
-  // ];
+  const timezones = [
+    "-10800000",
+    "-46800000",
+    "-39600000",
+    "-36000000",
+    "-32400000",
+    "-28800000",
+    "-25200000",
+    "-23400000",
+    "-21600000",
+    "-18000000",
+    "-7200000",
+    "-3600000",
+    "0",
+    "9000000",
+    "18000000",
+    "21600000",
+    "23400000",
+    "25200000",
+  ];
 
-  const timezones = ["0"];
   Object.values(state).forEach((arr) => {
     Object.values(arr).forEach((item) => {
       let network = item["@network"];
