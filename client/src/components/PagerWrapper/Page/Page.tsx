@@ -137,6 +137,7 @@ export const Page: FC<{
           window.location.reload();
         }}
         style={{ display: prevState ? "none" : "block" }}
+        placeholder="ability2 step"
       >
         Добавить правило
       </button>
