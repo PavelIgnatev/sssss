@@ -312,7 +312,6 @@ const updateStateByLevel = async () => {
                     status
                   ];
                 if (!abilityBid) {
-                  console.log([timezone], [network], [level], [currency], [bid], [status])
                   delete obj2[timezone][network][level][currency][bid][status];
 
                   if (
