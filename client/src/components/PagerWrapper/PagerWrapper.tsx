@@ -20,6 +20,8 @@ export const PagerWrapper: FC<PagerModel> = ({ state, prevState }) => {
       {newRules.map((e, index) => {
         return <Page key={index + 1000} state={state} prevState={e} />;
       })}
+      <br />
+      <br />
       <button
         onClick={() => {
           setCount(count + 1);
