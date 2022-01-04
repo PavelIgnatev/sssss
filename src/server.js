@@ -27,7 +27,7 @@ async function refreshCyclically() {
     await updateTreelikeState();
     console.log(`Обновил древовидный стейт по турнирам`);
     console.log(`Начал обновление стейта по уровням`);
-    // await updateStateByLevel();
+    await updateStateByLevel();
     console.log(`Завершил обновление стейта по уровням`);
     await new Promise((res, rej) => setTimeout(res, 21600000));
   }
