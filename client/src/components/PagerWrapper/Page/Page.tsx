@@ -41,36 +41,42 @@ export const Page: FC<{
         onChange={(e) => setValue1(e?.value)}
         placeholder="Network"
         disabled={Boolean(value1?.length)}
+        //@ts-ignore
         defaultValue={[value1].map((el) => {
           return { value: el, label: el };
         })}
       />
       <BaseSelect
         className={""}
+        //@ts-ignore
         options={Object.keys(state[value1] ?? {}).map((el) => {
           return { value: el, label: el };
         })}
         onChange={(e) => setValue2(e?.value)}
         disabled={!value1?.length || Boolean(value2?.length)}
         placeholder="Level"
+        //@ts-ignore
         defaultValue={[value2].map((el) => {
           return { value: el, label: el };
         })}
       />
       <BaseSelect
         className={""}
+        //@ts-ignore
         options={Object.keys(state[value1]?.[value2] ?? {}).map((el) => {
           return { value: el, label: el };
         })}
         onChange={(e) => setValue3(e?.value)}
         disabled={!value2?.length || !value1?.length || Boolean(value3?.length)}
         placeholder="Currency"
+        //@ts-ignore
         defaultValue={[value3].map((el) => {
           return { value: el, label: el };
         })}
       />
       <BaseSelect
         className={""}
+        //@ts-ignore
         options={Object.keys(state[value1]?.[value2]?.[value3] ?? {}).map(
           (el) => {
             return { value: el, label: el };
@@ -84,6 +90,7 @@ export const Page: FC<{
           Boolean(value4?.length)
         }
         placeholder="Bid"
+        //@ts-ignore
         defaultValue={[value4].map((el) => {
           return { value: el, label: el };
         })}
@@ -91,6 +98,7 @@ export const Page: FC<{
       <BaseSelect
         className={""}
         options={Object.keys(
+          //@ts-ignore
           state[value1]?.[value2]?.[value3]?.[value4] ?? {}
         ).map((el) => {
           return { value: el, label: el };
@@ -104,11 +112,13 @@ export const Page: FC<{
           Boolean(value5?.length)
         }
         placeholder="Status"
+        //@ts-ignore
         defaultValue={[value5].map((el) => {
           return { value: el, label: el };
         })}
       />
       <input
+      //@ts-ignore
         disabled={
           !value5?.length ||
           !value4?.length ||
