@@ -18,13 +18,14 @@ export const AdminAbilitySection: FC = () => {
   const stateAbility2 = useStore($state);
   const loading = useStore(fetchSettings.pending);
 
-  const [value, setValue] = useState<any>({});
 
   useEffect(() => {
     fetchStateAbility2();
     fetchSettings();
   }, []);
 
+  console.log(stateAbility2)
+  
   if (loading) return <Loader />;
 
   return (

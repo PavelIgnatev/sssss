@@ -3,7 +3,7 @@ const { readFile, writeFile } = require("../../utils/promisify");
 module.exports = async (req, res) => {
   try {
     const settings = JSON.parse(await readFile("src/state/settings.json"));
-    const { network, level, currency, bid, status, ability } = req.body;
+    const { network, level, currency, bid, status, name, ability } = req.body;
     const prevAbility = JSON.parse(
       await readFile("src/state/prevAbility.json")
     );
@@ -17,14 +17,16 @@ module.exports = async (req, res) => {
         settings[network][level][currency][bid] = {};
       if (!settings[network][level][currency][bid][status])
         settings[network][level][currency][bid][status] = {};
+        if (!settings[network][level][currency][bid][status])
+        settings[network][level][currency][bid][status][name] = {};
 
-      settings[network][level][currency][bid][status] = Number(ability);
+      settings[network][level][currency][bid][status][name] = Number(ability);
 
       await writeFile(
         "src/state/prevAbility.json",
         JSON.stringify(
           prevAbility.concat([
-            { network, level, currency, bid, status, ability },
+            { network, level, currency, bid, status, name, ability },
           ])
         )
       );
@@ -48,7 +50,8 @@ module.exports = async (req, res) => {
               el.currency !== currency &&
               el.bid !== bid &&
               el.status !== status &&
-              el.ability !== ability
+              el.ability !== ability &&
+              el.name !== name
           )
         )
       );

@@ -6,7 +6,6 @@ const {
 const { getDate } = require("./getDate");
 const { getTime } = require("./getTime");
 const updateStateByLevel = async () => {
-  //"6A", "6B",
   const levels = [ "7A", "7B"];
   const state = JSON.parse(await readFile("src/state/filtredState.json"));
   const gaps = JSON.parse(await readFile("src/state/gap.json"));
@@ -115,6 +114,7 @@ const updateStateByLevel = async () => {
   });
 
   const obj = {};
+  const obj2 = {};
 
   timezones.forEach((timezone) => {
     levels.forEach((level) => {
@@ -123,33 +123,33 @@ const updateStateByLevel = async () => {
         const startDate = Number(isStartDate * 1000) + Number(timezone);
         tournament["@startDay"] = isStartDate ? startDay(startDate) : "-";
 
+        let bid = tournament["@bid"];
+        const avability = tournament["@avability"];
+        const network = tournament["@network"];
+        const turbo = tournament["@turbo"];
+        const statusGap = `${turbo ? "turbo" : "normal"}`;
+        const gap = gaps?.[level]?.[network]?.[statusGap]?.[bid];
+        const KO = tournament["@bounty"];
+        const superturbo = tournament["@flags"]?.includes("ST");
+        const status = `${KO ? "KO" : "!KO"}${
+          superturbo ? "SuperTurbo" : turbo ? "Turbo" : "Normal"
+        }`;
+        const name = tournament["@name"]?.toLowerCase();
+        if (
+          (tournament["@bid"] && !avability) ||
+          !tournament["@currency"] ||
+          !name
+        ) {
+          return;
+        }
+
+        const currency = tournament["@currency"];
+
+        if (gap) {
+          bid = gap;
+        }
+
         if (filterLevelByRulesWithoutBrown(level, tournament)) {
-          let bid = tournament["@bid"];
-          const avability = tournament["@avability"];
-          const network = tournament["@network"];
-          const turbo = tournament["@turbo"];
-          const statusGap = `${turbo ? "turbo" : "normal"}`;
-          const gap = gaps?.[level]?.[network]?.[statusGap]?.[bid];
-          const KO = tournament["@bounty"];
-          const superturbo = tournament["@flags"]?.includes("ST");
-          const status = `${KO ? "KO" : "!KO"}${
-            superturbo ? "SuperTurbo" : turbo ? "Turbo" : "Normal"
-          }`;
-          const name = tournament["@name"]?.toLowerCase();
-          if (
-            (tournament["@bid"] && !avability) ||
-            !tournament["@currency"] ||
-            !name
-          ) {
-            return;
-          }
-
-          const currency = tournament["@currency"];
-
-          if (gap) {
-            bid = gap;
-          }
-
           if (!obj[timezone]) obj[timezone] = {};
           if (!obj[timezone][network]) obj[timezone][network] = {};
           if (!obj[timezone][network][level])
@@ -161,7 +161,7 @@ const updateStateByLevel = async () => {
           if (!obj[timezone][network][level][currency][bid])
             obj[timezone][network][level][currency][bid] = {};
           if (!obj[timezone][network][level][currency][bid][status])
-            obj[timezone][network][level][currency][bid][status] = [];
+            obj[timezone][network][level][currency][bid][status] = {};
           if (!obj[timezone][network][level][currency][bid][status][name])
             obj[timezone][network][level][currency][bid][status][name] = [];
 
@@ -197,6 +197,21 @@ const updateStateByLevel = async () => {
             result
           );
         }
+
+        if (!obj2[timezone]) obj2[timezone] = {};
+        if (!obj2[timezone][network]) obj2[timezone][network] = {};
+        if (!obj2[timezone][network][level])
+          obj2[timezone][network][level] = {};
+        if (!obj2[timezone][network][level])
+          obj2[timezone][network][level] = {};
+        if (!obj2[timezone][network][level][currency])
+          obj2[timezone][network][level][currency] = {};
+        if (!obj2[timezone][network][level][currency][bid])
+          obj2[timezone][network][level][currency][bid] = {};
+        if (!obj2[timezone][network][level][currency][bid][status])
+          obj2[timezone][network][level][currency][bid][status] = {};
+        if (!obj2[timezone][network][level][currency][bid][status][name])
+          obj2[timezone][network][level][currency][bid][status][name] = 0;
       });
     });
   });
@@ -282,6 +297,39 @@ const updateStateByLevel = async () => {
     });
   });
   await writeFile("src/state/stateByLevel.json", JSON.stringify(obj));
+
+  Object.keys(obj2).forEach((timezone) => {
+    Object.keys(obj2[timezone]).forEach((network) => {
+      Object.keys(obj2[timezone][network]).forEach((level) => {
+        Object.keys(obj2[timezone][network][level]).forEach((currency) => {
+          Object.keys(obj2[timezone][network][level][currency]).forEach(
+            (bid) => {
+              Object.keys(
+                obj2[timezone][network][level][currency][bid]
+              ).forEach((status) => {
+                const abilityBid =
+                  obj?.[timezone]?.[network]?.[level]?.[currency]?.[bid]?.[
+                    status
+                  ];
+                if (!abilityBid) {
+                  console.log([timezone], [network], [level], [currency], [bid], [status])
+                  delete obj2[timezone][network][level][currency][bid][status];
+
+                  if (
+                    !Object.keys(obj2[timezone][network][level][currency][bid])
+                      .length
+                  ) {
+                    delete obj2[timezone][network][level][currency][bid];
+                  }
+                }
+              });
+            }
+          );
+        });
+      });
+    });
+  });
+  await writeFile("src/state/st.json", JSON.stringify(obj2));
 };
 
 module.exports = {

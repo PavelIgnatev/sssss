@@ -159,7 +159,9 @@ module.exports = async (req, res) => {
           "@abilityBid": abilityBid
             ? Number(abilityBid) +
               Number(
-                settings[network]?.[level]?.[currency]?.[realBid]?.[status] ?? 0
+                settings[network]?.[level]?.[currency]?.[realBid]?.[status]?.[
+                  name
+                ] ?? 0
               )
             : "-",
           "@duration": duration ? getTime(duration) : "-",

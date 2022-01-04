@@ -28,7 +28,9 @@ module.exports = async (req, res) => {
         "@abilityBid": abilityBid
           ? Number(abilityBid) +
             Number(
-              settings[network]?.[level]?.[currency]?.[realBid]?.[status] ?? 0
+              settings[network]?.[level]?.[currency]?.[realBid]?.[status]?.[
+                item["@name"].toLowerCase()
+              ] ?? 0
             )
           : "-",
         "@ability": Math.round(item["@avability"]),
