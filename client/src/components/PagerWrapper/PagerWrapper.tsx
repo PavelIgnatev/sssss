@@ -1,27 +1,30 @@
 import { FC, useState } from "react";
-import { Page } from "./Page";
+import classNames from "classnames";
 
-export const PagerWrapper: FC<{ state?: any; prevState?: any }> = ({
-  state,
-  prevState,
-}) => {
+import { Page } from "./Page";
+import { PagerModel } from "./types";
+
+import classes from "./Page/Page.module.scss";
+
+export const PagerWrapper: FC<PagerModel> = ({ state, prevState }) => {
   const [count, setCount] = useState(0);
+  const newRules = Array(count).fill(null);
+
   return (
     <>
       {prevState.map((e: any, index: any) => {
         return <Page key={index} state={state} prevState={e} />;
       })}
-      {Array(count)
-        .fill(null)
-        .map((e, index) => {
-          return <Page key={index + 1000} state={state} prevState={e} />;
-        })}
+      {newRules.map((e, index) => {
+        return <Page key={index + 1000} state={state} prevState={e} />;
+      })}
       <button
         onClick={() => {
           setCount(count + 1);
         }}
+        className={classNames(classes.button, classes.maxButton)}
       >
-        Добавить еще один слот
+        Add new rules
       </button>
     </>
   );

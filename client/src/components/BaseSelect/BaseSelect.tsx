@@ -8,9 +8,7 @@ export const BaseSelect = (props: BaseSelectModel) => {
     <Select
       className={className}
       isClearable={true}
-      //@ts-ignore
       options={options}
-      //@ts-ignore
       onChange={onChange}
       placeholder={placeholder}
       isDisabled={disabled}

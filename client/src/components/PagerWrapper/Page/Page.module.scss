@@ -1,0 +1,60 @@
+.Page {
+  display: flex;
+}
+
+.name {
+  min-width: 200px;
+}
+
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: hsl(0, 0%, 20%);
+  font-size: 100%;
+  background-color: hsl(0, 0%, 100%);
+  border-color: hsl(0, 0%, 80%);
+  border-radius: 4px;
+  border-style: solid;
+  border-width: 1px;
+  outline: none;
+  min-height: 38px;
+  box-sizing: border-box;
+  transition: all 100ms;
+  padding: 2px 8px;
+  max-width: 80px;
+  width: 100%;
+  margin-left: 3px;
+  margin-bottom: 5px;
+  &:focus,
+  &:active {
+    outline: none;
+  }
+  cursor: pointer;
+  &:hover {
+    box-shadow: 0 0 0 1px #2684ff;
+    border-color: #2684ff;
+  }
+}
+
+.maxButton {
+    font-size: 18px;
+  max-width: 200px;
+}
+
+.disabled {
+  background-color: hsl(0, 0%, 95%);
+  border-color: hsl(0, 0%, 90%);
+  border-radius: 4px;
+
+  color: #999999;
+  pointer-events: none;
+  &:focus,
+  &:active {
+    outline: none;
+  }
+}
+
+.inactive {
+  display: none;
+}

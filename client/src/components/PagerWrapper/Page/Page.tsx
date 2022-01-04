@@ -1,10 +1,17 @@
+import classNames from "classnames";
 import { FC, useState } from "react";
-import { fetchStateAbility2, postFetchSettings } from "../../../store/Settings";
-import { BaseSelect } from "../../BaseSelect";
 
-export const Page: FC<{
-  state?: any;
-  prevState?: {
+import { getOptions } from "../../../helpers/getOptions";
+import { postFetchSettings } from "../../../store/Settings";
+import { BaseInputNumber } from "../../BaseInputNumber";
+import { BaseSelect } from "../../BaseSelect";
+import { PagerModel } from "../types";
+
+import classes from "./Page.module.scss";
+
+type PageProps = {
+  state: any;
+  prevState: {
     network: string;
     level: string;
     currency: string;
@@ -13,18 +20,24 @@ export const Page: FC<{
     name: string;
     ability: string;
   };
-}> = ({ state, prevState }) => {
-  const step1 = Object.keys(state).map((el) => {
-    return { value: el, label: el };
-  });
-  console.log(step1);
-  const [value1, setValue1] = useState<string | undefined>(prevState?.network);
-  const [value2, setValue2] = useState<string | undefined>(prevState?.level);
-  const [value3, setValue3] = useState<string | undefined>(prevState?.currency);
-  const [value4, setValue4] = useState<string | undefined>(prevState?.bid);
-  const [value5, setValue5] = useState<string | undefined>(prevState?.status);
-  const [value6, setValue6] = useState<string | undefined>(prevState?.name);
-  const [value7, setValue7] = useState<string | undefined>(prevState?.ability);
+};
+
+export const Page: FC<PageProps> = ({ state, prevState }) => {
+  const [value1, setValue1] = useState<string>(prevState?.network ?? "");
+  const [value2, setValue2] = useState<string>(prevState?.level ?? "");
+  const [value3, setValue3] = useState<string>(prevState?.currency ?? "");
+  const [value4, setValue4] = useState<string>(prevState?.bid ?? "");
+  const [value5, setValue5] = useState<string>(prevState?.status ?? "");
+  const [value6, setValue6] = useState<string>(prevState?.name ?? "");
+  const [value7, setValue7] = useState<string>(prevState?.ability ?? "");
+
+  const isValue1 = value1?.length;
+  const isValue2 = value2?.length;
+  const isValue3 = value3?.length;
+  const isValue4 = value4?.length;
+  const isValue5 = value5?.length;
+  const isValue6 = value6?.length;
+  const isValue7 = value7?.length;
 
   const formData = {
     network: value1,
@@ -37,145 +50,106 @@ export const Page: FC<{
   };
 
   return (
-    <div style={{ display: "flex" }}>
+    <div className={classes.Page}>
       <BaseSelect
-        className={""}
-        options={step1}
-        onChange={(e) => setValue1(e?.value)}
         placeholder="Network"
-        disabled={Boolean(value1?.length)}
-        //@ts-ignore
-        defaultValue={[value1].map((el) => {
-          return { value: el, label: el };
-        })}
+        options={getOptions(state)}
+        onChange={(e) => setValue1(e?.value ?? "")}
+        disabled={Boolean(isValue1)}
+        defaultValue={value1 ? { value: value1, label: value1 } : null}
       />
       <BaseSelect
-        className={""}
-        //@ts-ignore
-        options={Object.keys(state[value1] ?? {}).map((el) => {
-          return { value: el, label: el };
-        })}
-        onChange={(e) => setValue2(e?.value)}
-        disabled={!value1?.length || Boolean(value2?.length)}
         placeholder="Level"
-        //@ts-ignore
-        defaultValue={[value2].map((el) => {
-          return { value: el, label: el };
-        })}
+        options={getOptions(state[value1])}
+        onChange={(e) => setValue2(e?.value ?? "")}
+        disabled={!isValue1 || Boolean(isValue2)}
+        defaultValue={value2 ? { value: value2, label: value2 } : null}
       />
       <BaseSelect
-        className={""}
-        //@ts-ignore
-        options={Object.keys(state[value1]?.[value2] ?? {}).map((el) => {
-          return { value: el, label: el };
-        })}
-        onChange={(e) => setValue3(e?.value)}
-        disabled={!value2?.length || !value1?.length || Boolean(value3?.length)}
         placeholder="Currency"
-        //@ts-ignore
-        defaultValue={[value3].map((el) => {
-          return { value: el, label: el };
-        })}
+        options={getOptions(state[value1]?.[value2])}
+        onChange={(e) => setValue3(e?.value ?? "")}
+        disabled={!isValue2 || !isValue1 || Boolean(isValue3)}
+        defaultValue={value3 ? { value: value3, label: value3 } : null}
       />
       <BaseSelect
-        className={""}
-        //@ts-ignore
-        options={Object.keys(state[value1]?.[value2]?.[value3] ?? {}).map(
-          (el) => {
-            return { value: el, label: el };
-          }
-        )}
-        onChange={(e) => setValue4(e?.value)}
-        disabled={
-          !value3?.length ||
-          !value2?.length ||
-          !value1?.length ||
-          Boolean(value4?.length)
-        }
         placeholder="Bid"
-        //@ts-ignore
-        defaultValue={[value4].map((el) => {
-          return { value: el, label: el };
-        })}
+        options={getOptions(state[value1]?.[value2]?.[value3])}
+        onChange={(e) => setValue4(e?.value ?? "")}
+        disabled={!isValue3 || !isValue2 || !isValue1 || Boolean(isValue4)}
+        defaultValue={value4 ? { value: value4, label: value4 } : null}
       />
       <BaseSelect
-        className={""}
-        options={Object.keys(
-          //@ts-ignore
-          state[value1]?.[value2]?.[value3]?.[value4] ?? {}
-        ).map((el) => {
-          return { value: el, label: el };
-        })}
-        onChange={(e) => setValue5(e?.value)}
-        disabled={
-          !value4?.length ||
-          !value3?.length ||
-          !value2?.length ||
-          !value1?.length ||
-          Boolean(value5?.length)
-        }
         placeholder="Status"
-        //@ts-ignore
-        defaultValue={[value5].map((el) => {
-          return { value: el, label: el };
-        })}
+        options={getOptions(state[value1]?.[value2]?.[value3]?.[value4])}
+        onChange={(e) => setValue5(e?.value ?? "")}
+        defaultValue={value5 ? { value: value5, label: value5 } : null}
+        disabled={
+          !isValue4 || !isValue3 || !isValue2 || !isValue1 || Boolean(isValue5)
+        }
       />
       <BaseSelect
-        className={""}
-        options={Object.keys(
-          //@ts-ignore
-          state[value1]?.[value2]?.[value3]?.[value4]?.[value5] ?? {}
-        ).map((el) => {
-          return { value: el, label: el };
-        })}
-        onChange={(e) => setValue6(e?.value)}
-        disabled={
-          !value5?.length ||
-          !value4?.length ||
-          !value3?.length ||
-          !value2?.length ||
-          !value1?.length ||
-          Boolean(value6?.length)
-        }
         placeholder="Name"
-        //@ts-ignore
-        defaultValue={[value6].map((el) => {
-          return { value: el, label: el };
+        className={classes.name}
+        options={getOptions({
+          all: null,
+          ...state[value1]?.[value2]?.[value3]?.[value4]?.[value5],
         })}
-      />
-      <input
-        //@ts-ignore
+        onChange={(e) => setValue6(e?.value ?? "")}
+        defaultValue={value6 ? { value: value6, label: value6 } : null}
         disabled={
-          !value6?.length ||
-          !value5?.length ||
-          !value4?.length ||
-          !value3?.length ||
-          !value2?.length ||
-          !value1?.length ||
-          (value7?.length && prevState)
+          !isValue5 ||
+          !isValue4 ||
+          !isValue3 ||
+          !isValue2 ||
+          !isValue1 ||
+          Boolean(isValue6)
         }
-        onChange={(e) => setValue7(e?.currentTarget?.value)}
-        type="text"
-        value={value7}
+      />
+      <BaseInputNumber
+        placeholder="Ability2"
+        value={value7 ?? ""}
+        handleChange={(value) => {
+          setValue7(value);
+        }}
+        disabled={
+          !isValue6 ||
+          !isValue5 ||
+          !isValue4 ||
+          !isValue3 ||
+          !isValue2 ||
+          !isValue1 ||
+          Boolean(isValue7 && prevState)
+        }
       />
       <button
         onClick={() => {
-          postFetchSettings(Object.assign(formData, { method: "add" }));
+          postFetchSettings({ method: "add", ...formData });
           window.location.reload();
         }}
-        style={{ display: prevState ? "none" : "block" }}
-        placeholder="ability2 step"
+        className={classNames(classes.button, {
+          [classes.inactive]: prevState,
+          [classes.disabled]:
+            !isValue6 ||
+            !isValue5 ||
+            !isValue4 ||
+            !isValue3 ||
+            !isValue2 ||
+            !isValue1,
+        })}
       >
-        Добавить правило
+        Apply
       </button>
       <button
         onClick={() => {
-          postFetchSettings(Object.assign(formData, { method: "delete" }));
+          postFetchSettings({ method: "delete", ...formData });
           window.location.reload();
         }}
-        style={{ display: prevState ? "block" : "none" }}
+        className={classNames(classes.button, {
+          [classes.inactive]: !prevState,
+        })}
       >
-        Удалить правило
+        Сancel
       </button>
     </div>
   );

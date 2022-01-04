@@ -23,14 +23,22 @@ module.exports = async (req, res) => {
         stateAbility[timezone]?.[network]?.[level]?.[currency]?.[realBid]?.[
           status
         ];
+
+      const step = settings[network]?.[level]?.[currency]?.[realBid]?.[
+        status
+      ]?.[item["@name"].toLowerCase()]
+        ? settings[network]?.[level]?.[currency]?.[realBid]?.[status]?.[
+            item["@name"].toLowerCase()
+          ]
+        : settings[network]?.[level]?.[currency]?.[realBid]?.[status]?.["all"]
+        ? settings[network]?.[level]?.[currency]?.[realBid]?.[status]?.["all"]
+        : 0;
       return {
         ...item,
         "@abilityBid": abilityBid
           ? Number(abilityBid) +
             Number(
-              settings[network]?.[level]?.[currency]?.[realBid]?.[status]?.[
-                item["@name"].toLowerCase()
-              ] ?? 0
+              step
             )
           : "-",
         "@ability": Math.round(item["@avability"]),

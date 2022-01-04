@@ -142,6 +142,14 @@ module.exports = async (req, res) => {
           )
         );
 
+        const step = settings[network]?.[level]?.[currency]?.[realBid]?.[
+          status
+        ]?.[name]
+          ? settings[network]?.[level]?.[currency]?.[realBid]?.[status]?.[name]
+          : settings[network]?.[level]?.[currency]?.[realBid]?.[status]?.["all"]
+          ? settings[network]?.[level]?.[currency]?.[realBid]?.[status]?.["all"]
+          : 0;
+
         return {
           ...item,
           "@bid": bid,
@@ -156,14 +164,7 @@ module.exports = async (req, res) => {
           "@prizepool": prizepool > 0 ? prizepool : "-",
           "@network": network,
           "@ability": ability ? Number(ability) : "-",
-          "@abilityBid": abilityBid
-            ? Number(abilityBid) +
-              Number(
-                settings[network]?.[level]?.[currency]?.[realBid]?.[status]?.[
-                  name
-                ] ?? 0
-              )
-            : "-",
+          "@abilityBid": abilityBid ? Number(abilityBid) + Number(step) : "-",
           "@duration": duration ? getTime(duration) : "-",
           "@startDay": isStartDate ? startDay(startDate) : "-",
           "@scheduledStartDate": isStartDate ? getDate(startDate) : "-",
