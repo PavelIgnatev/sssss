@@ -4,8 +4,8 @@ const { filterLevelByWord } = require("./filterLevelByWord");
 const filterLevelByAbility = async (level, item) => {
   const name = item["@name"].toLowerCase(),
     network = item["@network"],
-    abilityBid = item["@abilityBid"],
-    ability = item["@ability"];
+    abilityBid = Number(item["@abilityBid"]),
+    ability = Number(item["@ability"]);
 
   if (filterLevelByWord(network, name)) return false;
 
@@ -22,7 +22,6 @@ const filterLevelByAbility = async (level, item) => {
   ) {
     return filterLevelByRules(level, item);
   }
-  // if (abilityBid === "-" || ability === "-") return false;
   return ability <= abilityBid;
 };
 

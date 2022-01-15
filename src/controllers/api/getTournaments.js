@@ -144,8 +144,10 @@ module.exports = async (req, res) => {
 
         const step = settings[network]?.[level]?.[currency]?.[realBid]?.[
           status
-        ]?.[name]
-          ? settings[network]?.[level]?.[currency]?.[realBid]?.[status]?.[name]
+        ]?.[item["@name"]]
+          ? settings[network]?.[level]?.[currency]?.[realBid]?.[status]?.[
+              item["@name"]
+            ]
           : settings[network]?.[level]?.[currency]?.[realBid]?.[status]?.["all"]
           ? settings[network]?.[level]?.[currency]?.[realBid]?.[status]?.["all"]
           : 0;

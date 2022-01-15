@@ -2,7 +2,7 @@ const { readFile } = require("../../utils/promisify");
 
 module.exports = async (req, res) => {
   const state = JSON.parse(
-    await readFile("src/state/stateByLevelWithoutSum.json")
+    await readFile("src/state/treelikeStateByLevel.json")
   );
   const settings = JSON.parse(await readFile("src/state/settings.json"));
 
@@ -26,22 +26,25 @@ module.exports = async (req, res) => {
 
       const step = settings[network]?.[level]?.[currency]?.[realBid]?.[
         status
-      ]?.[item["@name"].toLowerCase()]
+      ]?.[item["n"]]
         ? settings[network]?.[level]?.[currency]?.[realBid]?.[status]?.[
-            item["@name"].toLowerCase()
+            item["n"]
           ]
         : settings[network]?.[level]?.[currency]?.[realBid]?.[status]?.["all"]
         ? settings[network]?.[level]?.[currency]?.[realBid]?.[status]?.["all"]
         : 0;
+
       return {
         ...item,
-        "@abilityBid": abilityBid
-          ? Number(abilityBid) +
-            Number(
-              step
-            )
-          : "-",
-        "@ability": Math.round(item["@avability"]),
+        "@scheduledStartDate": item["s"],
+        "@duration": item["d"],
+        "@guarantee": item["g"],
+        "@name": item["n"],
+        "@network": network,
+        "@bid": item["b"],
+        "@prizepool": item["p"],
+        "@abilityBid": abilityBid ? Number(abilityBid) + Number(step) : "-",
+        "@ability": Math.round(item["a"]),
       };
     })
   );

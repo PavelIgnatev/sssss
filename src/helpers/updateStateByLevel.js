@@ -1,334 +1,181 @@
 const { readFile, writeFile } = require("../utils/promisify");
-const { startDay } = require("./startDay");
 const {
   filterLevelByRulesWithoutBrown,
 } = require("./filterLevelByRulesWithoutBrown");
-const { getDate } = require("./getDate");
-const { getTime } = require("./getTime");
+const { bidDefinition } = require("./bidDefinition");
+const { statusDefinition } = require("./statusDefinition");
+const {
+  scheduledStartDateDifinition,
+} = require("./scheduledStartDateDifinition");
+const { increaseProperties } = require("./increaseProperties");
+const { filterLevelByAbility } = require("./filterLevelByAbility");
+
 const updateStateByLevel = async () => {
-  const levels = [ "7A", "7B"];
+  const levels = ["7A", "7B"];
   const state = JSON.parse(await readFile("src/state/filtredState.json"));
   const gaps = JSON.parse(await readFile("src/state/gap.json"));
 
-  const newState = [];
-
-  // const timezones = [
-  //   "-10800000",
-  //   "-46800000",
-  //   "-39600000",
-  //   "-36000000",
-  //   "-32400000",
-  //   "-28800000",
-  //   "-25200000",
-  //   "-23400000",
-  //   "-21600000",
-  //   "-18000000",
-  //   "-7200000",
-  //   "-3600000",
-  //   "0",
-  //   "9000000",
-  //   "18000000",
-  //   "21600000",
-  //   "23400000",
-  //   "25200000",
-  // ];
-
-  const timezones = ["0"];
-  Object.values(state).forEach((arr) => {
-    Object.values(arr).forEach((item) => {
-      let network = item["@network"];
-      const stake = Number(item["@stake"] ?? 0);
-      const rake = Number(item["@rake"] ?? 0);
-      const bid = (stake + rake).toFixed(2);
-      const name = item["@name"]?.toLowerCase();
-
-      if (!name || !network || !bid) {
-        return;
-      }
-
-      switch (network) {
-        case "PokerStars(FR-ES-PT)": {
-          network = "PS.es";
-          break;
-        }
-        case "PokerStars": {
-          network = "PS.eu";
-          break;
-        }
-        case "PartyPoker": {
-          network = "Party";
-          break;
-        }
-        case "GGNetwork": {
-          network = "GG";
-          break;
-        }
-        case "888Poker": {
-          network = "888";
-          break;
-        }
-        case "Winamax.fr": {
-          network = "WNMX";
-          break;
-        }
-      }
-
-      //Фикс гарантии для WPN и 888Poker
-      if (network === "WPN" || network === "888") {
-        const $ = item["@name"].split("$");
-        if ($.length > 1)
-          item["@guarantee"] = $[1]
-            .split(" ")[0]
-            .replace(")", "")
-            .replace(",", "");
-      }
-
-      const prizepool = Math.round(
-        Math.max(
-          Number(item["@guarantee"] ?? 0),
-          Number(item["@prizePool"] ?? 0),
-          Number(item["@entrants"] ?? 0) * Number(item["@stake"] ?? 0)
-        )
-      );
-
-      const rebuy =
-        network === "888"
-          ? name?.includes("r&a")
-          : item["@flags"]?.includes("R");
-
-      newState.push({
-        ...item,
-        "@bid": bid,
-        "@turbo": item["@flags"]?.includes("T") || name?.includes("turbo"),
-        "@rebuy": rebuy,
-        "@od": item["@flags"]?.includes("OD"),
-        "@bounty": item["@flags"]?.includes("B"),
-        "@sng": item["@gameClass"]?.includes("sng"),
-        "@deepstack": item["@flags"]?.includes("D"),
-        "@superturbo": item["@flags"]?.includes("ST"),
-        "@prizepool": prizepool > 0 ? prizepool : "-",
-        "@network": network,
-        "@duration": item["@duration"] ? getTime(item["@duration"]) : "-",
-      });
-    });
-  });
+  const timezones = [
+    "-10800000",
+    "-46800000",
+    "-39600000",
+    "-36000000",
+    "-32400000",
+    "-28800000",
+    "-25200000",
+    "-23400000",
+    "-21600000",
+    "-18000000",
+    "-7200000",
+    "-3600000",
+    "0",
+    "9000000",
+    "18000000",
+    "21600000",
+    "23400000",
+    "25200000",
+  ];
 
   const obj = {};
-  const obj2 = {};
 
-  timezones.forEach((timezone) => {
-    levels.forEach((level) => {
-      newState.forEach((tournament) => {
-        const isStartDate = tournament["@date"] ?? 0;
-        const startDate = Number(isStartDate * 1000) + Number(timezone);
-        tournament["@startDay"] = isStartDate ? startDay(startDate) : "-";
+  timezones.forEach((ti) => {
+    levels.forEach((l) => {
+      Object.values(state).forEach((tournaments) => {
+        Object.values(tournaments).forEach((ft) => {
+          const t = increaseProperties(ft); //add properties for filter
+          const s = statusDefinition(t); //status
+          const b = bidDefinition(l, t, gaps); //bid
+          const r = t["@network"]; //network - room
+          const n = t["@name"]?.toLowerCase(); //name
+          const c = t["@currency"]; //currency
 
-        let bid = tournament["@bid"];
-        const avability = tournament["@avability"];
-        const network = tournament["@network"];
-        const turbo = tournament["@turbo"];
-        const statusGap = `${turbo ? "turbo" : "normal"}`;
-        const gap = gaps?.[level]?.[network]?.[statusGap]?.[bid];
-        const KO = tournament["@bounty"];
-        const superturbo = tournament["@flags"]?.includes("ST");
-        const status = `${KO ? "KO" : "!KO"}${
-          superturbo ? "SuperTurbo" : turbo ? "Turbo" : "Normal"
-        }`;
-        const name = tournament["@name"]?.toLowerCase();
-        if (
-          (tournament["@bid"] && !avability) ||
-          !tournament["@currency"] ||
-          !name
-        ) {
-          return;
-        }
-
-        const currency = tournament["@currency"];
-
-        if (gap) {
-          bid = gap;
-        }
-
-        if (filterLevelByRulesWithoutBrown(level, tournament)) {
-          if (!obj[timezone]) obj[timezone] = {};
-          if (!obj[timezone][network]) obj[timezone][network] = {};
-          if (!obj[timezone][network][level])
-            obj[timezone][network][level] = {};
-          if (!obj[timezone][network][level])
-            obj[timezone][network][level] = {};
-          if (!obj[timezone][network][level][currency])
-            obj[timezone][network][level][currency] = {};
-          if (!obj[timezone][network][level][currency][bid])
-            obj[timezone][network][level][currency][bid] = {};
-          if (!obj[timezone][network][level][currency][bid][status])
-            obj[timezone][network][level][currency][bid][status] = {};
-          if (!obj[timezone][network][level][currency][bid][status][name])
-            obj[timezone][network][level][currency][bid][status][name] = [];
-
-          if (currency === undefined) {
-            console.log(tournament);
+          if (!b || !r || !n || !c || !filterLevelByRulesWithoutBrown(l, t)) {
+            return;
           }
-          const result = {
-            "@scheduledStartDate": isStartDate ? getDate(startDate) : "-",
-            ...tournament,
-          };
-          delete result["@date"];
-          delete result["@currency"];
-          delete result["@combinedavroi"];
-          delete result["@entrants"];
-          delete result["@game"];
-          delete result["@id"];
-          delete result["@rake"];
-          delete result["@reEntries"];
-          delete result["@region"];
-          delete result["@stake"];
-          delete result["@structure"];
-          delete result["@turbo"];
-          delete result["@superturbo"];
-          delete result["@deepstack"];
-          delete result["@prizePool"];
-          delete result["@rebuy"];
-          delete result["@od"];
-          delete result["@bounty"];
-          delete result["@startDay"];
-          delete result["@rebuy"];
-          delete result["@sng"];
-          obj[timezone][network][level][currency][bid][status][name].push(
-            result
-          );
-        }
 
-        if (!obj2[timezone]) obj2[timezone] = {};
-        if (!obj2[timezone][network]) obj2[timezone][network] = {};
-        if (!obj2[timezone][network][level])
-          obj2[timezone][network][level] = {};
-        if (!obj2[timezone][network][level])
-          obj2[timezone][network][level] = {};
-        if (!obj2[timezone][network][level][currency])
-          obj2[timezone][network][level][currency] = {};
-        if (!obj2[timezone][network][level][currency][bid])
-          obj2[timezone][network][level][currency][bid] = {};
-        if (!obj2[timezone][network][level][currency][bid][status])
-          obj2[timezone][network][level][currency][bid][status] = {};
-        if (!obj2[timezone][network][level][currency][bid][status][name])
-          obj2[timezone][network][level][currency][bid][status][name] = 0;
-      });
-    });
-  });
+          if (!obj[ti]) obj[ti] = {};
+          if (!obj[ti][r]) obj[ti][r] = {};
+          if (!obj[ti][r][l]) obj[ti][r][l] = {};
+          if (!obj[ti][r][l][c]) obj[ti][r][l][c] = {};
+          if (!obj[ti][r][l][c][b]) obj[ti][r][l][c][b] = {};
+          if (!obj[ti][r][l][c][b][s]) obj[ti][r][l][c][b][s] = {};
+          if (!obj[ti][r][l][c][b][s][n]) obj[ti][r][l][c][b][s][n] = [];
 
-  Object.keys(obj).forEach((timezone) => {
-    Object.keys(obj[timezone]).forEach((network) => {
-      Object.keys(obj[timezone][network]).forEach((level) => {
-        Object.keys(obj[timezone][network][level]).forEach((currency) => {
-          Object.keys(obj[timezone][network][level][currency]).forEach(
-            (bid) => {
-              Object.keys(obj[timezone][network][level][currency][bid]).forEach(
-                (status) => {
-                  let result = [];
+          const result = {};
 
-                  Object.keys(
-                    obj[timezone][network][level][currency][bid][status]
-                  ).forEach((name) => {
-                    const values =
-                      obj[timezone][network][level][currency][bid][status][
-                        name
-                      ];
-                    const length = values?.length;
+          result["a"] = t["@avability"];
+          result["d"] = t["@duration"];
+          result["g"] = t["@guarantee"];
+          result["n"] = t["@name"];
+          result["b"] = t["@bid"];
+          result["p"] = t["@prizepool"];
+          result["s"] = scheduledStartDateDifinition(t, ti);
 
-                    if (length >= 3) {
-                      result = result.concat(values);
-                    }
-                  });
-
-                  obj[timezone][network][level][currency][bid][status] = result;
-                }
-              );
-            }
-          );
+          obj[ti][r][l][c][b][s][n].push(result);
         });
       });
     });
   });
 
-  await writeFile("src/state/stateByLevelWithoutSum.json", JSON.stringify(obj));
+  Object.keys(obj).forEach((ti) => {
+    Object.keys(obj[ti]).forEach((r) => {
+      Object.keys(obj[ti][r]).forEach((l) => {
+        Object.keys(obj[ti][r][l]).forEach((c) => {
+          Object.keys(obj[ti][r][l][c]).forEach((b) => {
+            Object.keys(obj[ti][r][l][c][b]).forEach((s) => {
+              let result = [];
 
-  Object.keys(obj).forEach((timezone) => {
-    Object.keys(obj[timezone]).forEach((network) => {
-      Object.keys(obj[timezone][network]).forEach((level) => {
-        Object.keys(obj[timezone][network][level]).forEach((currency) => {
-          Object.keys(obj[timezone][network][level][currency]).forEach(
-            (bid) => {
-              Object.keys(obj[timezone][network][level][currency][bid]).forEach(
-                (status) => {
-                  const values =
-                    obj[timezone][network][level][currency][bid][status];
-                  const length = values?.length || 1;
-                  const ability2 = Math.round(
-                    Number(
-                      values.reduce((r, i) => r + Number(i["@avability"]), 0) /
-                        length
-                    )
-                  );
-
-                  if (ability2) {
-                    obj[timezone][network][level][currency][bid][status] =
-                      ability2;
-                  } else {
-                    delete obj[timezone][network][level][currency][bid][status];
-                    if (
-                      !Object.keys(obj[timezone][network][level][currency][bid])
-                        .length
-                    ) {
-                      delete obj[timezone][network][level][currency][bid];
-                      if (
-                        !Object.keys(obj[timezone][network][level][currency])
-                          .length
-                      ) {
-                        delete obj[timezone][network][level][currency];
-                      }
-                    }
-                  }
-                }
-              );
-            }
-          );
-        });
-      });
-    });
-  });
-  await writeFile("src/state/stateByLevel.json", JSON.stringify(obj));
-
-  Object.keys(obj2).forEach((timezone) => {
-    Object.keys(obj2[timezone]).forEach((network) => {
-      Object.keys(obj2[timezone][network]).forEach((level) => {
-        Object.keys(obj2[timezone][network][level]).forEach((currency) => {
-          Object.keys(obj2[timezone][network][level][currency]).forEach(
-            (bid) => {
-              Object.keys(
-                obj2[timezone][network][level][currency][bid]
-              ).forEach((status) => {
-                const abilityBid =
-                  obj?.[timezone]?.[network]?.[level]?.[currency]?.[bid]?.[
-                    status
-                  ];
-                if (!abilityBid) {
-                  delete obj2[timezone][network][level][currency][bid][status];
-
-                  if (
-                    !Object.keys(obj2[timezone][network][level][currency][bid])
-                      .length
-                  ) {
-                    delete obj2[timezone][network][level][currency][bid];
-                  }
+              Object.keys(obj[ti][r][l][c][b][s]).forEach((n) => {
+                const values = obj[ti][r][l][c][b][s][n];
+                if (values?.length >= 3) {
+                  result.push(...values);
                 }
               });
-            }
-          );
+
+              if (result.length) {
+                obj[ti][r][l][c][b][s] = result;
+              } else {
+                delete obj[ti][r][l][c][b][s];
+              }
+            });
+          });
         });
       });
     });
   });
-  await writeFile("src/state/st.json", JSON.stringify(obj2));
+
+  await writeFile("src/state/treelikeStateByLevel.json", JSON.stringify(obj));
+
+  Object.keys(obj).forEach((ti) => {
+    Object.keys(obj[ti]).forEach((r) => {
+      Object.keys(obj[ti][r]).forEach((l) => {
+        Object.keys(obj[ti][r][l]).forEach((c) => {
+          if (!Object.keys(obj[ti][r][l][c]).length) {
+            delete obj[ti][r][l][c];
+          } else {
+            Object.keys(obj[ti][r][l][c]).forEach((b) => {
+              if (!Object.keys(obj[ti][r][l][c][b]).length) {
+                delete obj[ti][r][l][c][b];
+              } else {
+                Object.keys(obj[ti][r][l][c][b]).forEach((s) => {
+                  const v = obj[ti][r][l][c][b][s];
+                  const length = v.length;
+
+                  const a = Math.round(
+                    v.reduce((r, i) => r + +i["a"], 0) / length
+                  );
+
+                  obj[ti][r][l][c][b][s] = a;
+                });
+              }
+            });
+          }
+        });
+      });
+    });
+  });
+
+  await writeFile("src/state/stateByLevel.json", JSON.stringify(obj));
+
+  const obj2 = {};
+
+  timezones.forEach((ti) => {
+    levels.forEach((l) => {
+      Object.values(state).forEach((tournaments) => {
+        Object.values(tournaments).forEach((ft) => {
+          const t = increaseProperties(ft); //add properties for filter
+          const s = statusDefinition(t); //status
+          const b = bidDefinition(l, t, gaps); //bid
+          const r = t["@network"]; //network - room
+          const n = t["@name"]?.toLowerCase(); //name
+          const c = t["@currency"]; //currency
+
+          if (obj2?.[ti]?.[r]?.[l]?.[c]?.[b]?.[s]?.[t["@name"]]) {
+            return;
+          }
+
+          t["@ability"] = t["@avability"] ?? "-";
+          t["@abilityBid"] = obj?.[ti]?.[r]?.[l]?.[c]?.[b]?.[s] ?? "-";
+          t["@scheduledStartDate"] = scheduledStartDateDifinition(t, ti);
+
+          if (!b || !r || !n || !c || !filterLevelByAbility(l, t)) {
+            return;
+          }
+
+          if (!obj2[ti]) obj2[ti] = {};
+          if (!obj2[ti][r]) obj2[ti][r] = {};
+          if (!obj2[ti][r][l]) obj2[ti][r][l] = {};
+          if (!obj2[ti][r][l][c]) obj2[ti][r][l][c] = {};
+          if (!obj2[ti][r][l][c][b]) obj2[ti][r][l][c][b] = {};
+          if (!obj2[ti][r][l][c][b][s]) obj2[ti][r][l][c][b][s] = {};
+
+          obj2[ti][r][l][c][b][s][t["@name"]] = 1;
+        });
+      });
+    });
+  });
+
+  await writeFile("src/state/stateByAbility.json", JSON.stringify(obj2));
 };
 
 module.exports = {
