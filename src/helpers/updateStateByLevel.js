@@ -87,7 +87,7 @@ const updateStateByLevel = async () => {
     });
   });
 
-  // await writeFile("src/state/treelikeStateByLevel.json", JSON.stringify(obj));
+  await writeFile("src/state/treelikeStateByLevel.json", JSON.stringify(obj));
 
   Object.keys(obj).forEach((ti) => {
     Object.keys(obj[ti]).forEach((r) => {
