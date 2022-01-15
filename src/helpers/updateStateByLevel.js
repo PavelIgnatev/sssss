@@ -16,24 +16,7 @@ const updateStateByLevel = async () => {
   const gaps = JSON.parse(await readFile("src/state/gap.json"));
 
   const timezones = [
-    "-10800000",
-    "-46800000",
-    "-39600000",
-    "-36000000",
-    "-32400000",
-    "-28800000",
-    "-25200000",
-    "-23400000",
-    "-21600000",
-    "-18000000",
-    "-7200000",
-    "-3600000",
     "0",
-    "9000000",
-    "18000000",
-    "21600000",
-    "23400000",
-    "25200000",
   ];
 
   const obj = {};
@@ -104,7 +87,7 @@ const updateStateByLevel = async () => {
     });
   });
 
-  await writeFile("src/state/treelikeStateByLevel.json", JSON.stringify(obj));
+  // await writeFile("src/state/treelikeStateByLevel.json", JSON.stringify(obj));
 
   Object.keys(obj).forEach((ti) => {
     Object.keys(obj[ti]).forEach((r) => {
