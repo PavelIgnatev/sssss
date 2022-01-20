@@ -185,6 +185,7 @@ module.exports = async (req, res) => {
       const turbo = tournament["@turbo"];
 
       const status = await filterLevelByAbility(level, tournament);
+
       return (
         tournament["@bid"] >= Number(moneyStart) &&
         tournament["@bid"] <= Number(moneyEnd) &&

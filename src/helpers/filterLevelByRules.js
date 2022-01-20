@@ -265,7 +265,7 @@ const filterLevelByRules = (level, item) => {
       }
     } else if (network === "WNMX") {
       //Коричневые
-      if (EI(125.0)("main event (day 1")) return true;
+      if (EI(125.0)("main event - day 1e")) return true;
 
       if (!item["@turbo"]) {
         //Синие

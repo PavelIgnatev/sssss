@@ -1,9 +1,10 @@
 .table {
   display: grid;
+  border-collapse: collapse;
+  min-width: 100%;
   grid-template-columns:
     minmax(100px, 1fr) minmax(100px, 1fr) minmax(100px, 1fr) minmax(200px, 2fr)
     minmax(100px, 1fr) minmax(100px, 1fr) minmax(50px, 0.5fr) minmax(50px, 0.5fr)  minmax(100px, 1fr);
-  overflow: auto;
 }
 
 .thead,
