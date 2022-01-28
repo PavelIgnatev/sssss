@@ -7,6 +7,7 @@ module.exports = async (req, res) => {
     let prevAbility = JSON.parse(await readFile("src/state/prevAbility.json"));
 
     if (req.body.method === "add") {
+      if(prevAbility[level]) prevAbility[level] = []
       prevAbility[level].push({
         network,
         level,
