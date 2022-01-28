@@ -5,7 +5,6 @@
 /client/node_modules
 /.pnp
 .pnp.js
-/src/state/stateByLevelWithoutSum.json
 # testing
 /coverage
 

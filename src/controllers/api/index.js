@@ -1,13 +1,13 @@
 const getTournaments = require("./getTournaments");
-const getInfoTournament = require("./getInfoTournament");
-const getStateByLevel = require("./getStateByLevel");
-const getSettings = require("./getSettings");
-const postSettings = require("./postSettings");
+const getFormingAbility2 = require("./getFormingAbility2");
+const getAbility2 = require("./getAbility2");
+const getPreviewRules = require("./getPreviewRules");
+const updateSettings = require("./updateSettings");
 
 module.exports = {
   getTournaments,
-  getInfoTournament,
-  getStateByLevel,
-  getSettings,
-  postSettings,
+  getFormingAbility2,
+  getAbility2,
+  getPreviewRules,
+  updateSettings,
 };

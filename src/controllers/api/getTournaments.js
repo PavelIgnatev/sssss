@@ -1,10 +1,11 @@
 const { api } = require("../../api");
-const { filterLevelByAbility } = require("../../helpers/filterLevelByAbility");
+const { filterLevelByAbility } = require("../../modules/filterLevelByAbility");
 const { getDate } = require("../../helpers/getDate");
 const { getTime } = require("../../helpers/getTime");
 const { startDay } = require("../../helpers/startDay");
 const { readFile } = require("../../utils/promisify");
 const { getRealTime } = require("../../helpers/getRealTime");
+const { networkDefinition } = require("../../helpers/networkDefinition");
 
 module.exports = async (req, res) => {
   try {
@@ -19,14 +20,14 @@ module.exports = async (req, res) => {
     const level = req.query.level;
     const timezone = req.query.timezone;
 
-    const treelikeState = JSON.parse(
-      await readFile("src/state/treelikeState.json")
+    const ability1 = JSON.parse(
+      await readFile("src/store/ability1/ability1.json")
     );
-    const stateAbility = JSON.parse(
-      await readFile("src/state/stateByLevel.json")
+    const ability2WithoutName = JSON.parse(
+      await readFile("src/store/ability2/ability2WithoutName.json")
     );
-    const gaps = JSON.parse(await readFile("src/state/gap.json"));
-    const settings = JSON.parse(await readFile("src/state/settings.json"));
+    const gaps = JSON.parse(await readFile("src/store/gaps/gap.json"));
+    const rules = JSON.parse(await readFile("src/store/rules/rules.json"));
 
     console.log("Начинаю делать запрос");
     let result = (
@@ -53,67 +54,41 @@ module.exports = async (req, res) => {
         (a, b) =>
           (a["@scheduledStartDate"] ?? 0) - (b["@scheduledStartDate"] ?? 0)
       )
-      .map((item) => {
-        let network = item["@network"];
-        const name = item["@name"]?.toLowerCase();
-        const stake = Number(item["@stake"] ?? 0);
-        const rake = Number(item["@rake"] ?? 0);
+      .map((tournament) => {
+        const network = networkDefinition(tournament["@network"]);
+        const name = tournament["@name"]?.toLowerCase();
+        const stake = Number(tournament["@stake"] ?? 0);
+        const rake = Number(tournament["@rake"] ?? 0);
         const bid = (stake + rake).toFixed(2);
-        const isStartDate = item["@scheduledStartDate"] ?? 0;
-        const isRegDate = item["@lateRegEndDate"] ?? 0;
+        const isStartDate = tournament["@scheduledStartDate"] ?? 0;
+        const isRegDate = tournament["@lateRegEndDate"] ?? 0;
         const startDate = Number(isStartDate * 1000) + Number(timezone);
         const regDate = Number(isRegDate * 1000) + Number(timezone);
         const time = getRealTime(Number(`${isStartDate}000`));
-        const bounty = item["@flags"]?.includes("B");
+        const bounty = tournament["@flags"]?.includes("B");
         const turbo =
-          (item["@flags"]?.includes("T") ||
+          (tournament["@flags"]?.includes("T") ||
             name?.includes("turbo") ||
             name?.includes("hot")) &&
-          !item["@flags"]?.includes("ST");
-        const superturbo = item["@flags"]?.includes("ST");
+          !tournament["@flags"]?.includes("ST");
+        const superturbo = tournament["@flags"]?.includes("ST");
         const status = `${bounty ? "KO" : "!KO"}${
           superturbo ? "SuperTurbo" : turbo ? "Turbo" : "Normal"
         }`;
-        const currency = item["@currency"];
-        const od = item["@flags"]?.includes("OD");
-        const sng = item["@gameClass"]?.includes("sng");
-        const isNL = item["@structure"] === "NL";
-        const isH = item["@game"] === "H" || item["@game"] === "H6";
+        const currency = tournament["@currency"];
+        const od = tournament["@flags"]?.includes("OD");
+        const sng = tournament["@gameClass"]?.includes("sng");
+        const isNL = tournament["@structure"] === "NL";
+        const isH = tournament["@game"] === "H" || tournament["@game"] === "H6";
         const rebuy =
-          network === "888Poker"
+          network === "888"
             ? name?.includes("r&a")
-            : item["@flags"]?.includes("R");
+            : tournament["@flags"]?.includes("R");
 
-        switch (network) {
-          case "PokerStars(FR-ES-PT)": {
-            network = "PS.es";
-            break;
-          }
-          case "PokerStars": {
-            network = "PS.eu";
-            break;
-          }
-          case "PartyPoker": {
-            network = "Party";
-            break;
-          }
-          case "GGNetwork": {
-            network = "GG";
-            break;
-          }
-          case "888Poker": {
-            network = "888";
-            break;
-          }
-          case "Winamax.fr": {
-            network = "WNMX";
-            break;
-          }
-        }
-
-        const isAdekvat = isNL && isH && !rebuy && !od && !sng && !superturbo;
-        const info = treelikeState?.[network]?.[time]?.[bid]?.[name];
-        const ability = isAdekvat && info?.["@avability"];
+        const isMandatoryСonditions =
+          isNL && isH && !rebuy && !od && !sng && !superturbo;
+        const info = ability1?.[network]?.[time]?.[bid]?.[name];
+        const ability = isMandatoryСonditions && info?.["@avability"];
         const duration = info?.["@duration"]
           ? Math.round(info?.["@duration"])
           : null;
@@ -121,15 +96,15 @@ module.exports = async (req, res) => {
         const gap = gaps?.[level]?.[network]?.[statusGap]?.[bid];
         const realBid = gap ? gap : bid;
         const abilityBid =
-          stateAbility[timezone]?.[network]?.[level]?.[currency]?.[realBid]?.[
-            status
-          ];
+          ability2WithoutName[timezone]?.[network]?.[level]?.[currency]?.[
+            realBid
+          ]?.[status];
 
         //Фикс гарантии для WPN и 888Poker
         if (network === "WPN" || network === "888") {
-          const $ = item["@name"].split("$");
+          const $ = tournament["@name"].split("$");
           if ($.length > 1)
-            item["@guarantee"] = $[1]
+            tournament["@guarantee"] = $[1]
               .split(" ")[0]
               .replace(")", "")
               .replace(",", "");
@@ -137,36 +112,39 @@ module.exports = async (req, res) => {
 
         const prizepool = Math.round(
           Math.max(
-            Number(item["@guarantee"] ?? 0),
-            Number(item["@totalEntrants"] ?? 0) * Number(item["@stake"] ?? 0)
+            Number(tournament["@guarantee"] ?? 0),
+            Number(tournament["@totalEntrants"] ?? 0) *
+              Number(tournament["@stake"] ?? 0)
           )
         );
 
-        const step = settings[network]?.[level]?.[currency]?.[realBid]?.[
+        const rulesAbility2 = rules[network]?.[level]?.[currency]?.[realBid]?.[
           status
-        ]?.[item["@name"]]
-          ? settings[network]?.[level]?.[currency]?.[realBid]?.[status]?.[
-              item["@name"]
+        ]?.[tournament["@name"]]
+          ? rules[network]?.[level]?.[currency]?.[realBid]?.[status]?.[
+              tournament["@name"]
             ]
-          : settings[network]?.[level]?.[currency]?.[realBid]?.[status]?.["all"]
-          ? settings[network]?.[level]?.[currency]?.[realBid]?.[status]?.["all"]
+          : rules[network]?.[level]?.[currency]?.[realBid]?.[status]?.["all"]
+          ? rules[network]?.[level]?.[currency]?.[realBid]?.[status]?.["all"]
           : 0;
 
         return {
-          ...item,
+          ...tournament,
           "@bid": bid,
           "@realBid": realBid,
           "@turbo": turbo,
           "@rebuy": rebuy,
-          "@od": item["@flags"]?.includes("OD"),
+          "@od": tournament["@flags"]?.includes("OD"),
           "@bounty": bounty,
-          "@sng": item["@gameClass"]?.includes("sng"),
-          "@deepstack": item["@flags"]?.includes("D"),
-          "@superturbo": item["@flags"]?.includes("ST"),
+          "@sng": tournament["@gameClass"]?.includes("sng"),
+          "@deepstack": tournament["@flags"]?.includes("D"),
+          "@superturbo": tournament["@flags"]?.includes("ST"),
           "@prizepool": prizepool > 0 ? prizepool : "-",
           "@network": network,
           "@ability": ability ? Number(ability) : "-",
-          "@abilityBid": abilityBid ? Number(abilityBid) + Number(step) : "-",
+          "@abilityBid": abilityBid
+            ? Number(abilityBid) + Number(rulesAbility2)
+            : "-",
           "@duration": duration ? getTime(duration) : "-",
           "@startDay": isStartDate ? startDay(startDate) : "-",
           "@scheduledStartDate": isStartDate ? getDate(startDate) : "-",
@@ -180,7 +158,6 @@ module.exports = async (req, res) => {
     console.log("Промапил данные");
     console.log(result.length);
     result = await asyncFilter(result, async (tournament) => {
-      const name = tournament["@name"]?.toLowerCase();
       const bounty = tournament["@flags"]?.includes("B");
       const turbo = tournament["@turbo"];
 

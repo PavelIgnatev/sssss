@@ -7,10 +7,10 @@ const api = require("./controllers/api");
 const apiRouter = new express.Router();
 
 apiRouter.get("/tour", api.getTournaments);
-apiRouter.get("/info", api.getInfoTournament);
-apiRouter.get("/state", api.getStateByLevel);
-apiRouter.get("/settings", api.getSettings);
-apiRouter.post("/settings", api.postSettings);
+apiRouter.get("/info", api.getFormingAbility2);
+apiRouter.get("/state", api.getAbility2);
+apiRouter.get("/settings", api.getPreviewRules);
+apiRouter.post("/settings", api.updateSettings);
 
 // routes for /
 const mainRouter = new express.Router();

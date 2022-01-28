@@ -23,7 +23,7 @@ export const Page: FC<PageProps> = ({ state, prevState, level }) => {
   const [value5, setValue5] = useState<string>(prevState?.status ?? "");
   const [value6, setValue6] = useState<string>(prevState?.name ?? "");
   const [value7, setValue7] = useState<string>(prevState?.ability ?? "");
-  console.log(prevState)
+
   const isValue1 = value1?.length;
   const isValue3 = value3?.length;
   const isValue4 = value4?.length;
@@ -39,7 +39,31 @@ export const Page: FC<PageProps> = ({ state, prevState, level }) => {
     status: value5,
     name: value6,
     ability: value7,
+    ability2:
+      state[value1]?.[value2]?.[value3]?.[value4]?.[value5]?.[
+        Object.keys(
+          state[value1]?.[value2]?.[value3]?.[value4]?.[value5] ?? []
+        )[0]
+      ],
   };
+
+  const allObj = {};
+  console.log(
+    state[value1]?.[value2]?.[value3]?.[value4]?.[value5]?.[
+      Object.keys(
+        state[value1]?.[value2]?.[value3]?.[value4]?.[value5] ?? []
+      )[0]
+    ]
+  );
+  allObj[
+    `all (ability2: ${
+      state[value1]?.[value2]?.[value3]?.[value4]?.[value5]?.[
+        Object.keys(
+          state[value1]?.[value2]?.[value3]?.[value4]?.[value5] ?? []
+        )[0]
+      ]
+    })`
+  ] = null;
 
   return (
     <div className={classes.Page}>
@@ -75,7 +99,7 @@ export const Page: FC<PageProps> = ({ state, prevState, level }) => {
         placeholder="Name"
         className={classes.name}
         options={getOptions({
-          all: null,
+          ...allObj,
           ...state[value1]?.[value2]?.[value3]?.[value4]?.[value5],
         })}
         onChange={(e) => setValue6(e?.value ?? "")}
