@@ -9,7 +9,6 @@ export const $tableStateFiltred = $tableState.map((el) =>
     if(!item["@scheduledStartDate"] || item["@scheduledStartDate"] === '-') return true
     
     const res = item["@scheduledStartDate"]?.split(", ")?.[1]?.split(":")?.[0];
-    console.log(item["@scheduledStartDate"])
     let r = ($dateEnd.getState() === '00' && ($dateStart.getState() <= $dateEnd.getState())) ? '24' : $dateEnd.getState()
     return $dateStart.getState() <= $dateEnd.getState() ? ($dateStart.getState() <= res && res <= r) : !($dateStart.getState() > res && res > $dateEnd.getState() )
   })

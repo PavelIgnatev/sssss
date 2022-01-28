@@ -45,7 +45,7 @@ module.exports = async (req, res) => {
         console.log(error);
       }
 
-      prevAbility = prevAbility.filter((el) => {
+      prevAbility[level] = prevAbility[level].filter((el) => {
         return !(
           el.network === network &&
           el.level === level &&

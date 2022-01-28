@@ -9,15 +9,13 @@ import classes from "./Page/Page.module.scss";
 export const PagerWrapper: FC<PagerModel> = ({ state, prevState }) => {
   const [count, setCount] = useState<any>({});
 
-  console.log(prevState);
-
   return (
     <div className={classes.pager}>
       {["7A", "7B"].map((level) => {
         return (
-          <div className={classes.wrapper}>
+          <div className={classes.wrapper} key={level}>
             <input type="checkbox" id={level} className={classes.hide} />
-            <label htmlFor={level}>Rules for level{level}</label>
+            <label htmlFor={level}>Rules for level {level}</label>
             <div>
               {(prevState?.[level] ?? []).map((e: any, index: any) => {
                 return (
