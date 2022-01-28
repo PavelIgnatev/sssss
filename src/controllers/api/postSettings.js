@@ -7,7 +7,8 @@ module.exports = async (req, res) => {
     let prevAbility = JSON.parse(await readFile("src/state/prevAbility.json"));
 
     if (req.body.method === "add") {
-      if(prevAbility[level]) prevAbility[level] = []
+      if (!prevAbility[level]) prevAbility[level] = [];
+
       prevAbility[level].push({
         network,
         level,
@@ -23,7 +24,7 @@ module.exports = async (req, res) => {
         JSON.stringify(prevAbility)
       );
 
-      name = name.split('    (')[0]
+      name = name.split("    (")[0];
 
       if (!settings[network]) settings[network] = {};
       if (!settings[network][level]) settings[network][level] = {};
@@ -38,7 +39,6 @@ module.exports = async (req, res) => {
 
       settings[network][level][currency][bid][status][name] = Number(ability);
       if (!prevAbility[level]) prevAbility[level] = [];
-    
     } else {
       try {
         delete settings[network][level][currency][bid][status][name];

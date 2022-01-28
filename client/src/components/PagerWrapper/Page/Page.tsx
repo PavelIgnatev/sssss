@@ -23,7 +23,7 @@ export const Page: FC<PageProps> = ({ state, prevState, level }) => {
   const [value5, setValue5] = useState<string>(prevState?.status ?? "");
   const [value6, setValue6] = useState<string>(prevState?.name ?? "");
   const [value7, setValue7] = useState<string>(prevState?.ability ?? "");
-
+  console.log(prevState)
   const isValue1 = value1?.length;
   const isValue3 = value3?.length;
   const isValue4 = value4?.length;
