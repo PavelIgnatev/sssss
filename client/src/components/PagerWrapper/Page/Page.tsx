@@ -11,20 +11,13 @@ import classes from "./Page.module.scss";
 
 type PageProps = {
   state: any;
-  prevState: {
-    network: string;
-    level: string;
-    currency: string;
-    bid: string;
-    status: string;
-    name: string;
-    ability: string;
-  };
+  prevState: any;
+  level: string;
 };
 
-export const Page: FC<PageProps> = ({ state, prevState }) => {
+export const Page: FC<PageProps> = ({ state, prevState, level }) => {
   const [value1, setValue1] = useState<string>(prevState?.network ?? "");
-  const [value2, setValue2] = useState<string>(prevState?.level ?? "");
+  const [value2, setValue2] = useState<string>(level);
   const [value3, setValue3] = useState<string>(prevState?.currency ?? "");
   const [value4, setValue4] = useState<string>(prevState?.bid ?? "");
   const [value5, setValue5] = useState<string>(prevState?.status ?? "");
@@ -32,7 +25,6 @@ export const Page: FC<PageProps> = ({ state, prevState }) => {
   const [value7, setValue7] = useState<string>(prevState?.ability ?? "");
 
   const isValue1 = value1?.length;
-  const isValue2 = value2?.length;
   const isValue3 = value3?.length;
   const isValue4 = value4?.length;
   const isValue5 = value5?.length;
@@ -59,24 +51,17 @@ export const Page: FC<PageProps> = ({ state, prevState }) => {
         defaultValue={value1 ? { value: value1, label: value1 } : null}
       />
       <BaseSelect
-        placeholder="Level"
-        options={getOptions(state[value1])}
-        onChange={(e) => setValue2(e?.value ?? "")}
-        disabled={!isValue1 || Boolean(isValue2)}
-        defaultValue={value2 ? { value: value2, label: value2 } : null}
-      />
-      <BaseSelect
         placeholder="Currency"
         options={getOptions(state[value1]?.[value2])}
         onChange={(e) => setValue3(e?.value ?? "")}
-        disabled={!isValue2 || !isValue1 || Boolean(isValue3)}
+        disabled={!isValue1 || Boolean(isValue3)}
         defaultValue={value3 ? { value: value3, label: value3 } : null}
       />
       <BaseSelect
         placeholder="Bid"
         options={getOptions(state[value1]?.[value2]?.[value3])}
         onChange={(e) => setValue4(e?.value ?? "")}
-        disabled={!isValue3 || !isValue2 || !isValue1 || Boolean(isValue4)}
+        disabled={!isValue3 || !isValue1 || Boolean(isValue4)}
         defaultValue={value4 ? { value: value4, label: value4 } : null}
       />
       <BaseSelect
@@ -84,9 +69,7 @@ export const Page: FC<PageProps> = ({ state, prevState }) => {
         options={getOptions(state[value1]?.[value2]?.[value3]?.[value4])}
         onChange={(e) => setValue5(e?.value ?? "")}
         defaultValue={value5 ? { value: value5, label: value5 } : null}
-        disabled={
-          !isValue4 || !isValue3 || !isValue2 || !isValue1 || Boolean(isValue5)
-        }
+        disabled={!isValue4 || !isValue3 || !isValue1 || Boolean(isValue5)}
       />
       <BaseSelect
         placeholder="Name"
@@ -98,12 +81,7 @@ export const Page: FC<PageProps> = ({ state, prevState }) => {
         onChange={(e) => setValue6(e?.value ?? "")}
         defaultValue={value6 ? { value: value6, label: value6 } : null}
         disabled={
-          !isValue5 ||
-          !isValue4 ||
-          !isValue3 ||
-          !isValue2 ||
-          !isValue1 ||
-          Boolean(isValue6)
+          !isValue5 || !isValue4 || !isValue3 || !isValue1 || Boolean(isValue6)
         }
       />
       <BaseInputNumber
@@ -117,7 +95,6 @@ export const Page: FC<PageProps> = ({ state, prevState }) => {
           !isValue5 ||
           !isValue4 ||
           !isValue3 ||
-          !isValue2 ||
           !isValue1 ||
           Boolean(isValue7 && prevState)
         }
@@ -130,12 +107,7 @@ export const Page: FC<PageProps> = ({ state, prevState }) => {
         className={classNames(classes.button, {
           [classes.inactive]: prevState,
           [classes.disabled]:
-            !isValue6 ||
-            !isValue5 ||
-            !isValue4 ||
-            !isValue3 ||
-            !isValue2 ||
-            !isValue1,
+            !isValue6 || !isValue5 || !isValue4 || !isValue3 || !isValue1,
         })}
       >
         Apply

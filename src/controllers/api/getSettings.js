@@ -1,4 +1,4 @@
-const { readFile, writeFile } = require("../../utils/promisify");
+const { readFile } = require("../../utils/promisify");
 
 module.exports = async (req, res) => {
   try {
@@ -6,11 +6,6 @@ module.exports = async (req, res) => {
 
     res.json(settings);
   } catch (error) {
-    const mockSettings = {
-      abilityStep: 0,
-    };
-    await writeFile("src/state/settings.json", JSON.stringify(mockSettings));
-    res.json(mockSettings);
     console.log(error);
   }
 };

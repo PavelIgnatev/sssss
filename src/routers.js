@@ -14,7 +14,7 @@ apiRouter.post("/settings", api.postSettings);
 
 // routes for /
 const mainRouter = new express.Router();
-console.log(process.env.NODE_ENV)
+
 if (process.env.NODE_ENV === "production") {
   mainRouter.use(express.static("client/build"));
   mainRouter.get("*", (req, res) => {

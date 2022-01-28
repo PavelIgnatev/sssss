@@ -21,9 +21,6 @@ export const BaseInputNumber: FC<BaseInputNumberModel> = ({
       )
     )
       return value;
-    console.log(
-      Number(value) > 9999 ? "9999" : Number(value) < -9999 ? "-9999" : value
-    );
 
     handleChange(
       Number(value) > 9999 ? "9999" : Number(value) < -9999 ? "-9999" : value

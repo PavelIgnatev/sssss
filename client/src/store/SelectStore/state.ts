@@ -7,7 +7,7 @@ export const $network = createStore<MultiValue<selectModel> | null>(null);
 export const $makeUp = createStore<SingleValue<selectModel>>(null);
 export const $time = createStore<SingleValue<selectModel>>(null);
 export const $timezone = createStore<SingleValue<selectModel>>(null);
-export const $timezoneTable = createStore<string>('');
+export const $timezoneTable = createStore<string>("");
 export const $moneyStart = createStore<number>(1);
 export const $moneyEnd = createStore<number>(1);
 export const $onlyKO = createStore<boolean>(false);
@@ -59,24 +59,6 @@ export const $stateMakeup = [
 ];
 
 export const $stateTimezone = [
-  { value: "-10800000", label: "UTC" },
-  { value: "-46800000", label: "HST" },
-  { value: "-39600000", label: "PT" },
-  { value: "-36000000", label: "MT" },
-  { value: "-32400000", label: "CT" },
   { value: "-28800000", label: "ET" },
-  { value: "-25200000", label: "AT" },
-  { value: "-23400000", label: "NT" },
-  { value: "-21600000", label: "ART" },
-  { value: "-18000000s", label: "BRT"},
-  { value: "-18000000", label: "WET" },
-  { value: "-7200000", label: "CET" },
-  { value: "-3600000", label: "EET" },
   { value: "0", label: "MSK" },
-  { value: "9000000", label: "IST" },
-  { value: "18000000s", label: "CCT" },
-  { value: "21600000", label: "JST" },
-  { value: "18000000", label: "AWST" },
-  { value: "23400000", label: "ACST" },
-  { value: "25200000", label: "AEST" },
 ];

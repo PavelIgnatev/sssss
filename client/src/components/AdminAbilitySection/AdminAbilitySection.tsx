@@ -14,7 +14,7 @@ import { PagerWrapper } from "../PagerWrapper";
 import classes from "./AdminAbilitySection.module.scss";
 
 export const AdminAbilitySection: FC = () => {
-  const ability2 = useStore($prevSettings);
+  const ability2: any = useStore($prevSettings);
   const stateAbility2 = useStore($state);
   const loading = useStore(fetchSettings.pending);
 
@@ -23,8 +23,6 @@ export const AdminAbilitySection: FC = () => {
     fetchStateAbility2();
     fetchSettings();
   }, []);
-
-  console.log(stateAbility2)
   
   if (loading) return <Loader />;
 

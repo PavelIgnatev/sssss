@@ -28,7 +28,7 @@ export const fetchUserReposFx = createEffect(async () => {
     moneyEnd = $moneyEnd.getState(),
     dateEnd = $dateEnd.getState(),
     dateStart = $dateStart.getState(),
-    timezone = $timezone.getState()?.value?.replace("s", ""),
+    timezone = $timezone.getState()?.value,
     makeUp = $makeUp.getState()?.value,
     onlyKO = $onlyKO.getState(),
     onlyTurbo = $onlyTurbo.getState(),
@@ -75,7 +75,7 @@ export const fetchUserReposFx = createEffect(async () => {
       onlyNormal,
       timezone,
     });
-    console.log(result)
+
     handleChangeTimezoneTable($timezone.getState()?.label ?? "");
     return result;
   } catch {

@@ -3,10 +3,27 @@ const { readFile, writeFile } = require("../../utils/promisify");
 module.exports = async (req, res) => {
   try {
     const settings = JSON.parse(await readFile("src/state/settings.json"));
-    const { network, level, currency, bid, status, name, ability } = req.body;
+    let { network, level, currency, bid, status, name, ability } = req.body;
     let prevAbility = JSON.parse(await readFile("src/state/prevAbility.json"));
 
     if (req.body.method === "add") {
+      prevAbility[level].push({
+        network,
+        level,
+        currency,
+        bid,
+        status,
+        name,
+        ability,
+      });
+
+      await writeFile(
+        "src/state/prevAbility.json",
+        JSON.stringify(prevAbility)
+      );
+
+      name = name.split('    (')[0]
+
       if (!settings[network]) settings[network] = {};
       if (!settings[network][level]) settings[network][level] = {};
       if (!settings[network][level][currency])
@@ -19,15 +36,8 @@ module.exports = async (req, res) => {
         settings[network][level][currency][bid][status][name] = {};
 
       settings[network][level][currency][bid][status][name] = Number(ability);
-
-      await writeFile(
-        "src/state/prevAbility.json",
-        JSON.stringify(
-          prevAbility.concat([
-            { network, level, currency, bid, status, name, ability },
-          ])
-        )
-      );
+      if (!prevAbility[level]) prevAbility[level] = [];
+    
     } else {
       try {
         delete settings[network][level][currency][bid][status][name];

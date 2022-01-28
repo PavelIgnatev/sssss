@@ -15,9 +15,7 @@ const updateStateByLevel = async () => {
   const state = JSON.parse(await readFile("src/state/filtredState.json"));
   const gaps = JSON.parse(await readFile("src/state/gap.json"));
 
-  const timezones = [
-    "0",
-  ];
+  const timezones = ["0", "-28800000"];
 
   const obj = {};
 
@@ -151,8 +149,7 @@ const updateStateByLevel = async () => {
           if (!obj2[ti][r][l][c]) obj2[ti][r][l][c] = {};
           if (!obj2[ti][r][l][c][b]) obj2[ti][r][l][c][b] = {};
           if (!obj2[ti][r][l][c][b][s]) obj2[ti][r][l][c][b][s] = {};
-
-          obj2[ti][r][l][c][b][s][t["@name"]] = 1;
+          obj2[ti][r][l][c][b][s][t["@name"] + `    (${t["@abilityBid"]})`] = 1;
         });
       });
     });
