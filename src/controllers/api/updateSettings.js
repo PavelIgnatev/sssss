@@ -5,18 +5,23 @@ module.exports = async (req, res) => {
     const settings = JSON.parse(await readFile("src/store/rules/rules.json"));
     let { network, level, currency, bid, status, name, ability, ability2 } =
       req.body;
-    let prevAbility = JSON.parse(await readFile("src/store/rules/preview.json"));
+    let prevAbility = JSON.parse(
+      await readFile("src/store/rules/preview.json")
+    );
 
     if (req.body.method === "add") {
-      if (!prevAbility[level]) prevAbility[level] = [];
-
-      prevAbility[level].push({
+      if (!prevAbility[level.split("")[0]])
+        prevAbility[level.split("")[0]] = [];
+      
+      prevAbility[level.split("")[0]].push({
         network,
         level,
         currency,
         bid,
         status,
-        name: name + ` (ability2: ${ability2})`,
+        name:
+          name +
+          (!name.includes("(ability2") ? ` (ability2: ${ability2})` : ""),
         ability,
       });
 
@@ -41,16 +46,18 @@ module.exports = async (req, res) => {
       settings[network][level][currency][bid][status][name] = Number(ability);
       if (!prevAbility[level]) prevAbility[level] = [];
     } else {
-      prevAbility[level] = prevAbility[level].filter((el) => {
-        return !(
-          el.network === network &&
-          el.level === level &&
-          el.currency === currency &&
-          el.bid === bid &&
-          el.status === status &&
-          el.name == name + ` (ability2: ${ability2})`
-        );
-      });
+      prevAbility[level.split("")[0]] = prevAbility[level.split("")[0]].filter(
+        (el) => {
+          return !(
+            el.network === network &&
+            el.level === level &&
+            el.currency === currency &&
+            el.bid === bid &&
+            el.status === status &&
+            el.name == name
+          );
+        }
+      );
 
       await writeFile(
         "src/store/rules/preview.json",
