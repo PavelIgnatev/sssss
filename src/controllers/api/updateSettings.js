@@ -1,3 +1,4 @@
+const { updateRules } = require("../../modules/updateRules");
 const { readFile, writeFile } = require("../../utils/promisify");
 
 module.exports = async (req, res) => {
@@ -10,10 +11,9 @@ module.exports = async (req, res) => {
     );
 
     if (req.body.method === "add") {
-      if (!prevAbility[level.split("")[0]])
-        prevAbility[level.split("")[0]] = [];
-      
-      prevAbility[level.split("")[0]].push({
+      if (!prevAbility[level]) prevAbility[level] = [];
+
+      const previw = {
         network,
         level,
         currency,
@@ -23,57 +23,34 @@ module.exports = async (req, res) => {
           name +
           (!name.includes("(ability2") ? ` (ability2: ${ability2})` : ""),
         ability,
+      };
+
+      prevAbility[level].push(previw);
+      console.log('Новое правило ' + previw + ' добавлено')
+
+      await writeFile(
+        "src/store/rules/preview.json",
+        JSON.stringify(prevAbility)
+      );
+    } else {
+      prevAbility[level] = prevAbility[level].filter((el) => {
+        return !(
+          el.network === network &&
+          el.level === level &&
+          el.currency === currency &&
+          el.bid === bid &&
+          el.status === status &&
+          el.name == name &&
+          el.ability == ability
+        );
       });
 
       await writeFile(
         "src/store/rules/preview.json",
         JSON.stringify(prevAbility)
       );
-
-      name = name.split(" (ability2: ")[0];
-
-      if (!settings[network]) settings[network] = {};
-      if (!settings[network][level]) settings[network][level] = {};
-      if (!settings[network][level][currency])
-        settings[network][level][currency] = {};
-      if (!settings[network][level][currency][bid])
-        settings[network][level][currency][bid] = {};
-      if (!settings[network][level][currency][bid][status])
-        settings[network][level][currency][bid][status] = {};
-      if (!settings[network][level][currency][bid][status])
-        settings[network][level][currency][bid][status][name] = {};
-
-      settings[network][level][currency][bid][status][name] = Number(ability);
-      if (!prevAbility[level]) prevAbility[level] = [];
-    } else {
-      prevAbility[level.split("")[0]] = prevAbility[level.split("")[0]].filter(
-        (el) => {
-          return !(
-            el.network === network &&
-            el.level === level &&
-            el.currency === currency &&
-            el.bid === bid &&
-            el.status === status &&
-            el.name == name
-          );
-        }
-      );
-
-      await writeFile(
-        "src/store/rules/preview.json",
-        JSON.stringify(prevAbility)
-      );
-
-      name = name.split(" (ability2: ")[0];
-
-      try {
-        delete settings[network][level][currency][bid][status][name];
-      } catch (error) {
-        console.log(error);
-      }
     }
-    await writeFile("src/store/rules/rules.json", JSON.stringify(settings));
-
+    updateRules(prevAbility);
     res.json(req.body);
   } catch (error) {
     res.status(500).json({});
