@@ -7,7 +7,7 @@ async function updateRules(preview) {
   levels.forEach((level) => {
     preview[level].forEach((tournament) => {
       let { network, level, currency, bid, status, name, ability } = tournament;
-      name = name.split(' (ability2:')[0]
+      name = name.split(' (A1:')[0].split(' (A2: ')[0]
       if (!settings[network]) settings[network] = {};
       if (!settings[network][level]) settings[network][level] = {};
       if (!settings[network][level][currency])

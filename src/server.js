@@ -1,6 +1,8 @@
 const express = require("express");
 const { PORT } = require("./config");
-const { updateFiltredTournaments } = require("./modules/updateFiltredTournaments");
+const {
+  updateFiltredTournaments,
+} = require("./modules/updateFiltredTournaments");
 const setupMiddlewares = require("./middlewares");
 const { apiRouter, mainRouter } = require("./routers");
 const { updateAbility1 } = require("./modules/updateAbility1");
@@ -18,6 +20,7 @@ app.use("/api", apiRouter);
 app.use("/", mainRouter);
 
 app.listen(process.env.PORT || PORT, async () => {
+  console.log("Сервер запущен", new Date());
   async function refreshCyclically() {
     while (true) {
       await updateFiltredTournaments();
@@ -28,7 +31,7 @@ app.listen(process.env.PORT || PORT, async () => {
       await updateAbility1();
       console.log(`Обновил древовидный стейт по турнирам`);
       console.log(`Начал обновление стейта по уровням`);
-      // await updateAbility2()
+      await updateAbility2()
       console.log(`Завершил обновление стейта по уровням`);
       await new Promise((res, rej) => setTimeout(res, 21600000));
     }
