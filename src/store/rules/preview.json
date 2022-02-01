@@ -1,1 +1,4 @@
-{"7A":[{"network":"888","level":"7A","currency":"USD","bid":"2.20","status":"KONormal","name":"$500 PKO (A1: 61)(A2: 61)","ability":"-222"},{"network":"888","level":"7A","currency":"USD","bid":"2.20","status":"KONormal","name":"$2,000 PKO Rumble 2.20 (A1: 60)(A2: 61)","ability":"-60"},{"network":"888","level":"7A","currency":"USD","bid":"2.20","status":"KONormal","name":"all (A2: 61)","ability":"-999"},{"network":"PS.eu","level":"7A","currency":"USD","bid":"7.50","status":"KONormal","name":"Bounty Builder $7.50, $30K Gtd (A1: 61)(A2: 62)","ability":"21"},{"network":"PS.eu","level":"7A","currency":"USD","bid":"8.80","status":"!KONormal","name":"all (A2: 59)","ability":"9999"},{"network":"PS.es","level":"7A","currency":"EUR","bid":"10.00","status":"KONormal","name":"Progressive KO €10, €2,500 Gtd (A1: 62)(A2: 64)","ability":"9999"},{"network":"Party","level":"7A","currency":"USD","bid":"5.50","status":"KONormal","name":"The Headhunter: $6K Gtd - Legend of the Week! (A1: 62)(A2: 61)","ability":"9999"}],"7B":[]}
+{
+    "7A": [],
+    "7B": []
+}
