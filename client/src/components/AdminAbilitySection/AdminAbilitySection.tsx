@@ -18,36 +18,15 @@ export const AdminAbilitySection: FC = () => {
   const stateAbility2 = useStore($state);
   const loading = useStore(fetchSettings.pending);
 
-
   useEffect(() => {
     fetchStateAbility2();
     fetchSettings();
   }, []);
-  
+
   if (loading) return <Loader />;
 
   return (
     <section className={classes.section}>
-      <h2>Admissible networks: </h2>
-      <ul>
-        <li>GG</li>
-        <li>888</li>
-        <li>Party</li>
-        <li>PS.eu</li>
-        <li>WPN</li>
-        <li>PS.es</li>
-        <li>WNMX</li>
-      </ul>
-      <h2>Admissible levels: </h2>
-      <ul>
-        <li>7A</li>
-        <li>7B</li>
-      </ul>
-      <h2>Admissible currency: </h2>
-      <ul>
-        <li>USD</li>
-        <li>EUR</li>
-      </ul>
       <h2>Admissible status: </h2>
       <ul>
         <li>!KONormal</li>

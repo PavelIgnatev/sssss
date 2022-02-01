@@ -7,6 +7,7 @@ const api = require("./controllers/api");
 const apiRouter = new express.Router();
 
 apiRouter.get("/tour", api.getTournaments);
+apiRouter.get("/preview", api.getPreview  );
 apiRouter.get("/info", api.getFormingAbility2);
 apiRouter.get("/state", api.getAbility2);
 apiRouter.get("/settings", api.getPreviewRules);

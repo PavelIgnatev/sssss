@@ -2,8 +2,8 @@ const { updateRules } = require("../../modules/updateRules");
 const { readFile, writeFile } = require("../../utils/promisify");
 
 module.exports = async (req, res) => {
+  console.log("Начинаю обновлять настройки");
   try {
-    const settings = JSON.parse(await readFile("src/store/rules/rules.json"));
     let { network, level, currency, bid, status, name, ability, ability2 } =
       req.body;
     let prevAbility = JSON.parse(
@@ -25,31 +25,47 @@ module.exports = async (req, res) => {
         ability,
       };
 
-      prevAbility[level].push(previw);
-      console.log('Новое правило ' + previw + ' добавлено')
+      try {
+        prevAbility[level].push(previw);
+        console.log("Новое правило " + JSON.stringify(previw) + " добавлено");
+      } catch (error) {
+        console.log(error);
+        console.log("Новое правило " + JSON.stringify(previw) + " добавлено не было");
+      }
 
       await writeFile(
         "src/store/rules/preview.json",
         JSON.stringify(prevAbility)
       );
     } else {
-      prevAbility[level] = prevAbility[level].filter((el) => {
-        return !(
-          el.network === network &&
-          el.level === level &&
-          el.currency === currency &&
-          el.bid === bid &&
-          el.status === status &&
-          el.name == name &&
-          el.ability == ability
+      try {
+        prevAbility[level] = prevAbility[level].filter((el) => {
+          return !(
+            el.network === network &&
+            el.level === level &&
+            el.currency === currency &&
+            el.bid === bid &&
+            el.status === status &&
+            el.name == name &&
+            el.ability == ability
+          );
+        });
+        console.log("Правило " + JSON.stringify(req.body) + " удалено");
+      } catch (error) {
+        console.log(
+          "Правило " +
+            JSON.stringify(req.body) +
+            " удалено не было, произошла ошибка"
         );
-      });
+        console.log(error);
+      }
 
       await writeFile(
         "src/store/rules/preview.json",
         JSON.stringify(prevAbility)
       );
     }
+    console.log("Начал обновлять config правил");
     updateRules(prevAbility);
     res.json(req.body);
   } catch (error) {

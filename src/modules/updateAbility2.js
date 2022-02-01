@@ -78,6 +78,12 @@ const updateAbility2 = async () => {
                 obj[ti][r][l][c][b][s] = result;
               } else {
                 delete obj[ti][r][l][c][b][s];
+                if (!Object.keys(obj[ti][r][l][c][b]).length) {
+                  delete obj[ti][r][l][c][b];
+                  if (!Object.keys(obj[ti][r][l][c]).length) {
+                    delete obj[ti][r][l][c];
+                  }
+                }
               }
             });
           });
@@ -109,8 +115,9 @@ const updateAbility2 = async () => {
                   const a = Math.round(
                     v.reduce((r, i) => r + +i["a"], 0) / length
                   );
-
-                  obj[ti][r][l][c][b][s] = a;
+                  if (a) {
+                    obj[ti][r][l][c][b][s] = a;
+                  }
                 });
               }
             });
@@ -144,10 +151,10 @@ const updateAbility2 = async () => {
 
           const ability2 = obj?.[ti]?.[r]?.[l]?.[c]?.[b]?.[s];
 
-          if (ability2 && (!b || !r || !n || !c)) {
+          if (!b || !r || !n || !c || !ability2) {
             return;
           }
-
+          
           if (!obj2[ti]) obj2[ti] = {};
           if (!obj2[ti][r]) obj2[ti][r] = {};
           if (!obj2[ti][r][l]) obj2[ti][r][l] = {};
