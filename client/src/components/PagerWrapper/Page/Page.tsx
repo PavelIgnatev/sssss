@@ -50,7 +50,7 @@ export const Page: FC<PageProps> = ({ state, prevState, level }) => {
   };
 
   const allObj: any = {};
-  allObj[`all (ability2: ${ability2})`] = null;
+  allObj[`all (A2: ${ability2})`] = null;
 
   return (
     <div className={classes.Page}>

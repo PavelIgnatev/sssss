@@ -28,7 +28,7 @@ app.listen(process.env.PORT || PORT, async () => {
       await updateAbility1();
       console.log(`Обновил древовидный стейт по турнирам`);
       console.log(`Начал обновление стейта по уровням`);
-      await updateAbility2()
+      // await updateAbility2()
       console.log(`Завершил обновление стейта по уровням`);
       await new Promise((res, rej) => setTimeout(res, 21600000));
     }

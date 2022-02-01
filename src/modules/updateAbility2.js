@@ -8,6 +8,7 @@ const {
   scheduledStartDateDifinition,
 } = require("../helpers/scheduledStartDateDifinition");
 const { increaseProperties } = require("../helpers/increaseProperties");
+const { getRealTime } = require("../helpers/getRealTime");
 
 const updateAbility2 = async () => {
   const levels = ["7A", "7B"];
@@ -134,6 +135,10 @@ const updateAbility2 = async () => {
 
   const obj2 = {};
 
+  const ability1 = JSON.parse(
+    await readFile("src/store/ability1/ability1.json")
+  );
+
   timezones.forEach((ti) => {
     levels.forEach((l) => {
       Object.values(state).forEach((tournaments) => {
@@ -144,6 +149,8 @@ const updateAbility2 = async () => {
           const r = t["@network"]; //network - room
           const n = t["@name"]?.toLowerCase(); //name
           const c = t["@currency"]; //currency
+          const isStartDate = ft["@date"] ?? 0;
+          const time = getRealTime(Number(`${isStartDate}000`));
 
           if (obj2?.[ti]?.[r]?.[l]?.[c]?.[b]?.[s]?.[t["@name"]]) {
             return;
@@ -154,14 +161,18 @@ const updateAbility2 = async () => {
           if (!b || !r || !n || !c || !ability2) {
             return;
           }
-          
+
+          const ability =
+            ability1?.[r]?.[time]?.[b]?.[n]?.["@avability"] ?? "-";
+
           if (!obj2[ti]) obj2[ti] = {};
           if (!obj2[ti][r]) obj2[ti][r] = {};
           if (!obj2[ti][r][l]) obj2[ti][r][l] = {};
           if (!obj2[ti][r][l][c]) obj2[ti][r][l][c] = {};
           if (!obj2[ti][r][l][c][b]) obj2[ti][r][l][c][b] = {};
           if (!obj2[ti][r][l][c][b][s]) obj2[ti][r][l][c][b][s] = {};
-          obj2[ti][r][l][c][b][s][t["@name"]] = ability2;
+          obj2[ti][r][l][c][b][s][t["@name"] + ` (A1: ${ability})`] =
+            ability2;
         });
       });
     });

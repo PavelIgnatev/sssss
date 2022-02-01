@@ -20,8 +20,7 @@ module.exports = async (req, res) => {
         bid,
         status,
         name:
-          name +
-          (!name.includes("(ability2") ? ` (ability2: ${ability2})` : ""),
+          name + (!name.includes("(A2") ? `(A2: ${ability2})` : ""),
         ability,
       };
 
@@ -30,7 +29,9 @@ module.exports = async (req, res) => {
         console.log("Новое правило " + JSON.stringify(previw) + " добавлено");
       } catch (error) {
         console.log(error);
-        console.log("Новое правило " + JSON.stringify(previw) + " добавлено не было");
+        console.log(
+          "Новое правило " + JSON.stringify(previw) + " добавлено не было"
+        );
       }
 
       await writeFile(
@@ -46,7 +47,11 @@ module.exports = async (req, res) => {
             el.currency === currency &&
             el.bid === bid &&
             el.status === status &&
-            el.name == name &&
+            el.name ==
+              name +
+                (!name.includes("(A2")
+                  ? `(A2: ${ability2})`
+                  : "") &&
             el.ability == ability
           );
         });
