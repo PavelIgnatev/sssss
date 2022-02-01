@@ -120,7 +120,7 @@ export const Page: FC<PageProps> = ({ state, prevState, level, minus }) => {
         className={classNames(classes.button, {
           [classes.inactive]: prevState,
           [classes.disabled]:
-            !isValue6 || !isValue5 || !isValue4 || !isValue3 || !isValue1,
+            !isValue7 || !isValue6 || !isValue5 || !isValue4 || !isValue3 || !isValue1,
         })}
       >
         Apply
