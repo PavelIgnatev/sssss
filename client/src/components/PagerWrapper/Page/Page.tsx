@@ -112,22 +112,27 @@ export const Page: FC<PageProps> = ({ state, prevState, level, minus }) => {
         }
       />
       <button
-        onClick={() => {
-          postFetchSettings({ method: "add", ...formData });
-          fetchSettings();
+        onClick={async () => {
+          await postFetchSettings({ method: "add", ...formData });
+          await fetchSettings();
           minus();
         }}
         className={classNames(classes.button, {
           [classes.inactive]: prevState,
           [classes.disabled]:
-            !isValue7 || !isValue6 || !isValue5 || !isValue4 || !isValue3 || !isValue1,
+            !isValue7 ||
+            !isValue6 ||
+            !isValue5 ||
+            !isValue4 ||
+            !isValue3 ||
+            !isValue1,
         })}
       >
         Apply
       </button>
       <button
-        onClick={() => {
-          postFetchSettings({ method: "delete", ...formData });
+        onClick={async () => {
+          await postFetchSettings({ method: "delete", ...formData });
           fetchSettings();
         }}
         className={classNames(classes.button, {
