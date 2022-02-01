@@ -65,7 +65,7 @@ export const Page: FC<PageProps> = ({ state, prevState, level }) => {
         placeholder="Currency"
         options={getOptions(state[value1]?.[value2])}
         onChange={(e) => setValue3(e?.value ?? "")}
-        disabled={Boolean(isValue3)}
+        disabled={!isValue1 || Boolean(isValue3)}
         defaultValue={value3 ? { value: value3, label: value3 } : null}
       />
       <BaseSelect
