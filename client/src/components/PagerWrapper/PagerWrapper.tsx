@@ -22,7 +22,7 @@ export const PagerWrapper: FC<PagerModel> = ({ state, prevState }) => {
             <label htmlFor={level}>Rules for level {level}</label>
             <div>
               {EffMu.map((id) => (
-                <div className={classes.effmu}>
+                <div className={classes.effmu} key={level + id}>
                   <input
                     type="checkbox"
                     id={level + id}
@@ -34,10 +34,16 @@ export const PagerWrapper: FC<PagerModel> = ({ state, prevState }) => {
                       (e: any, index: any) => {
                         return (
                           <Page
-                            key={index}
+                            key={String(Math.random()).substr(2, 12)}
                             state={state}
                             prevState={e}
                             level={level + id}
+                            minus={() => {
+                              const d: any = {};
+                              d[level + id] = 0;
+
+                              setCount({ ...count, ...d });
+                            }}
                           />
                         );
                       }
@@ -47,10 +53,16 @@ export const PagerWrapper: FC<PagerModel> = ({ state, prevState }) => {
                       .map((e, index) => {
                         return (
                           <Page
-                            key={index + 1000}
+                            key={String(Math.random()).substr(2, 12)}
                             state={state}
                             prevState={e}
                             level={level + id}
+                            minus={() => {
+                              const d: any = {};
+                              d[level + id] = 0;
+
+                              setCount({ ...count, ...d });
+                            }}
                           />
                         );
                       })}

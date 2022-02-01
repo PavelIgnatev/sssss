@@ -2,7 +2,7 @@ import classNames from "classnames";
 import { FC, useState } from "react";
 
 import { getOptions } from "../../../helpers/getOptions";
-import { postFetchSettings } from "../../../store/Settings";
+import { fetchSettings, postFetchSettings } from "../../../store/Settings";
 import { BaseInputNumber } from "../../BaseInputNumber";
 import { BaseSelect } from "../../BaseSelect";
 import { PagerModel } from "../types";
@@ -13,9 +13,10 @@ type PageProps = {
   state: any;
   prevState: any;
   level: string;
+  minus: () => void;
 };
 
-export const Page: FC<PageProps> = ({ state, prevState, level }) => {
+export const Page: FC<PageProps> = ({ state, prevState, level, minus }) => {
   const [value1, setValue1] = useState<string>(prevState?.network ?? "");
   const [value2, setValue2] = useState<string>(level);
   const [value3, setValue3] = useState<string>(prevState?.currency ?? "");
@@ -113,7 +114,8 @@ export const Page: FC<PageProps> = ({ state, prevState, level }) => {
       <button
         onClick={() => {
           postFetchSettings({ method: "add", ...formData });
-          window.location.reload();
+          fetchSettings();
+          minus();
         }}
         className={classNames(classes.button, {
           [classes.inactive]: prevState,
@@ -126,7 +128,7 @@ export const Page: FC<PageProps> = ({ state, prevState, level }) => {
       <button
         onClick={() => {
           postFetchSettings({ method: "delete", ...formData });
-          window.location.reload();
+          fetchSettings();
         }}
         className={classNames(classes.button, {
           [classes.inactive]: !prevState,

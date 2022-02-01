@@ -23,7 +23,7 @@ export const AdminAbilitySection: FC = () => {
     fetchSettings();
   }, []);
 
-  if (loading) return <Loader />;
+  // if (loading) return <Loader />;
 
   return (
     <section className={classes.section}>
