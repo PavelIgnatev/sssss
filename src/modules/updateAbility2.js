@@ -161,9 +161,8 @@ const updateAbility2 = async () => {
           if (!b || !r || !n || !c || !ability2) {
             return;
           }
-
           const ability =
-            ability1?.[r]?.[time]?.[b]?.[n]?.["@avability"] ?? "-";
+            ability1?.[r]?.[time]?.[t['@bid']]?.[n]?.["@avability"] ?? "-";
 
           if (!obj2[ti]) obj2[ti] = {};
           if (!obj2[ti][r]) obj2[ti][r] = {};
@@ -171,7 +170,7 @@ const updateAbility2 = async () => {
           if (!obj2[ti][r][l][c]) obj2[ti][r][l][c] = {};
           if (!obj2[ti][r][l][c][b]) obj2[ti][r][l][c][b] = {};
           if (!obj2[ti][r][l][c][b][s]) obj2[ti][r][l][c][b][s] = {};
-          obj2[ti][r][l][c][b][s][t["@name"] + ` (A1: ${ability})`] =
+          obj2[ti][r][l][c][b][s][t["@name"] + ` (A1: ${ability})(${time})`] =
             ability2;
         });
       });

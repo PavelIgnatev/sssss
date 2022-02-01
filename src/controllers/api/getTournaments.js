@@ -118,14 +118,18 @@ module.exports = async (req, res) => {
           )
         );
 
-        const rulesAbility2 = rules[network]?.[level]?.[currency]?.[realBid]?.[
-          status
-        ]?.[tournament["@name"]]
-          ? rules[network]?.[level]?.[currency]?.[realBid]?.[status]?.[
+        const rulesAbility2 = rules[network]?.[time]?.[level]?.[currency]?.[
+          realBid
+        ]?.[status]?.[tournament["@name"]]
+          ? rules[network]?.[time]?.[level]?.[currency]?.[realBid]?.[status]?.[
               tournament["@name"]
             ]
-          : rules[network]?.[level]?.[currency]?.[realBid]?.[status]?.["all"]
-          ? rules[network]?.[level]?.[currency]?.[realBid]?.[status]?.["all"]
+          : rules[network]?.["all"]?.[level]?.[currency]?.[realBid]?.[status]?.[
+              "all"
+            ]
+          ? rules[network]?.["all"]?.[level]?.[currency]?.[realBid]?.[status]?.[
+              "all"
+            ]
           : 0;
 
         return {

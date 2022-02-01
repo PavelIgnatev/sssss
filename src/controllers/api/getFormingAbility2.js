@@ -23,15 +23,19 @@ module.exports = async (req, res) => {
         stateAbility[timezone]?.[network]?.[level]?.[currency]?.[realBid]?.[
           status
         ];
-
-      const step = settings[network]?.[level]?.[currency]?.[realBid]?.[
+      const time = item["s"]?.split(" ")?.[2];
+      const step = settings[network]?.[time]?.[level]?.[currency]?.[realBid]?.[
         status
       ]?.[item["n"]]
-        ? settings[network]?.[level]?.[currency]?.[realBid]?.[status]?.[
+        ? settings[network]?.[time]?.[level]?.[currency]?.[realBid]?.[status]?.[
             item["n"]
           ]
-        : settings[network]?.[level]?.[currency]?.[realBid]?.[status]?.["all"]
-        ? settings[network]?.[level]?.[currency]?.[realBid]?.[status]?.["all"]
+        : settings[network]?.["all"]?.[level]?.[currency]?.[realBid]?.[
+            status
+          ]?.["all"]
+        ? settings[network]?.["all"]?.[level]?.[currency]?.[realBid]?.[
+            status
+          ]?.["all"]
         : 0;
 
       return {
