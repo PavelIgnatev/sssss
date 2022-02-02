@@ -4,9 +4,14 @@ const { filterLevelByWord } = require("./filterLevelByWord");
 
 async function updateFiltredTournaments() {
   try {
-    const prevState = JSON.parse(await readFile("src/store/tournaments/tournaments.json"));
+    const prevState = JSON.parse(
+      await readFile("src/store/tournaments/tournaments.json")
+    );
     const currentState = {};
-    const currentTime = new Date(Date.now() - 2 * 86400000);
+    const currentTime = new Date(Date.now() - 2 * 86400000).toLocaleString(
+      "en-US",
+      { timeZone: "Europe/Moscow" }
+    );
     const year = currentTime.getFullYear();
     const month = currentTime.getMonth() + 1;
     const day = currentTime.getDate();
@@ -76,7 +81,7 @@ async function updateFiltredTournaments() {
             }
           }
 
-          if(!name) return false
+          if (!name) return false;
 
           if (filterLevelByWord(network, name?.toLowerCase())) return false;
 

@@ -263,13 +263,13 @@ const filterLevelByRulesWithoutBrown = (level, item) => {
           if (EME(109.0)(200000)) return true;
           if (EME(82.0)(100000)) return true;
           if (EME(55.0)(50000)) return true;
-          if (EME(44.0)(12000)) return true;
+          if (EME(44.0)(25000)) return true;
           if (EME(33.0)(6000)) return true;
         } else {
           if (EME(109.0)(300000)) return true;
           if (EME(82.0)(175000)) return true;
           if (EME(55.0)(90000)) return true;
-          if (EME(44.0)(40000)) return true;
+          if (EME(44.0)(50000)) return true;
           if (EME(33.0)(20000)) return true;
         }
       } else if (!item["@rebuy"]) {
