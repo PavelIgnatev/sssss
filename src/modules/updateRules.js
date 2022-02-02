@@ -29,4 +29,5 @@ async function updateRules(preview) {
   });
   await writeFile("src/store/rules/rules.json", JSON.stringify(settings));
 }
+
 module.exports = { updateRules };
