@@ -8,13 +8,17 @@ async function updateFiltredTournaments() {
       await readFile("src/store/tournaments/tournaments.json")
     );
     const currentState = {};
-    const currentTime = new Date(Date.now() - 2 * 86400000).toLocaleString(
-      "en-US",
-      { timeZone: "Europe/Moscow" }
-    );
-    const year = currentTime.getFullYear();
-    const month = currentTime.getMonth() + 1;
-    const day = currentTime.getDate();
+    const currentTime = new Date(Date.now() - 2 * 86400000);
+    const year = currentTime
+      .getFullYear()
+      .toLocaleString("en-US", { timeZone: "Europe/Moscow" });
+    const month =
+      currentTime
+        .getMonth()
+        .toLocaleString("en-US", { timeZone: "Europe/Moscow" }) + 1;
+    const day = currentTime
+      .getDate()
+      .toLocaleString("en-US", { timeZone: "Europe/Moscow" });
     const date = `${year}-${month}-${day}`;
 
     if (prevState[date]) return;
