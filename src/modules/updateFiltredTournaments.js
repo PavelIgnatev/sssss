@@ -35,7 +35,7 @@ async function updateFiltredTournaments() {
 
     Object.keys(Object.assign(currentState, prevState)).forEach((el) => {
       if (!filtredState[el]) filtredState[el] = {};
-      filtredState[el] = Object.assign(currentState, prevState)[el].filter(
+      filtredState[el] = Object.assign(currentState, prevState)[el]?.filter(
         (item) => {
           const od = item["@flags"]?.includes("OD"),
             sng = item["@gameClass"]?.includes("sng"),
