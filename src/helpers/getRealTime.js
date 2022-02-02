@@ -1,20 +1,12 @@
 const getRealTime = (date) => {
-  const subbed = new Date(date);
-  const hour = subbed
-    .getHours()
-    .toLocaleString("en-US", {
+  return new Date(Number(date))
+    .toLocaleString("en-EN", {
+      hour12: false,
       timeZone: "Europe/Moscow",
+      hour: "numeric",
+      minute: "numeric",
     })
-    .toString()
-    .padStart(2, "0");
-  const min = subbed
-    .getMinutes()
-    .toLocaleString("en-US", {
-      timeZone: "Europe/Moscow",
-    })
-    .toString()
-    .padStart(2, "0");
-  return `${hour}:${min}`;
+    .replace("24", "00");
 };
 
 module.exports = { getRealTime };
