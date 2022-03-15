@@ -18,11 +18,9 @@ module.exports = async (req, res) => {
   );
 
   res.json(
-    state[timezone][network][level][currency][realBid][status].map((item) => {
+    state?.[network][level][currency][realBid][status].map((item) => {
       const abilityBid =
-        stateAbility[timezone]?.[network]?.[level]?.[currency]?.[realBid]?.[
-          status
-        ];
+        stateAbility?.[network]?.[level]?.[currency]?.[realBid]?.[status];
       const time = item["s"]?.split(" ")?.[2];
       const step = settings[network]?.[time]?.[level]?.[currency]?.[realBid]?.[
         status

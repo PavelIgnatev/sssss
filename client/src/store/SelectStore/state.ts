@@ -8,6 +8,7 @@ export const $makeUp = createStore<SingleValue<selectModel>>(null);
 export const $time = createStore<SingleValue<selectModel>>(null);
 export const $timezone = createStore<SingleValue<selectModel>>(null);
 export const $timezoneTable = createStore<string>("");
+export const $alias = createStore<string>("");
 export const $moneyStart = createStore<number>(1);
 export const $moneyEnd = createStore<number>(1);
 export const $onlyKO = createStore<boolean>(false);

@@ -10,7 +10,7 @@ async function updateFiltredTournaments() {
     const currentState = {};
     const currentTime = new Date(Date.now() - 2 * 86400000);
     const year = currentTime.getFullYear();
-    const month = currentTime.getMonth();
+    const month = currentTime.getMonth() + 1;
     const day = currentTime.getDate();
     const date = `${year}-${month}-${day}`;
 

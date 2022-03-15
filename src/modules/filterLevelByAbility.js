@@ -2,7 +2,6 @@ const { filterLevelByRules } = require("./filterLevelByRules");
 const { filterLevelByWord } = require("./filterLevelByWord");
 
 const filterLevelByAbility = async (level, item) => {
-
   const name = item["@name"].toLowerCase(),
     network = item["@network"],
     abilityBid =

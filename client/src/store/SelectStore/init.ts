@@ -12,10 +12,11 @@ import {
   $onlyFreezout,
   $onlyNormal,
   $time,
+  $alias,
   $dateStart,
   $dateEnd,
   $timezone,
-  $timezoneTable
+  $timezoneTable,
 } from "./state";
 
 const cb = (_: SingleValue<selectModel>, v: SingleValue<selectModel>) => v;
@@ -81,8 +82,11 @@ export const { handleChangeTimezone } = createApi($timezone, {
 
 export const { handleChangeTimezoneTable } = createApi($timezoneTable, {
   handleChangeTimezoneTable: cbDate,
-}); 
+});
 
+export const { handleChangeAlias } = createApi($alias, {
+  handleChangeAlias: cbDate,
+});
 
 $level.watch((v) => {
   handleChangeMoneyStart(v?.moneyStart ?? 1);

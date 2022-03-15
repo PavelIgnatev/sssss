@@ -17,7 +17,7 @@ const updateAbility1 = async () => {
         const bid = (stake + rake).toFixed(2);
         const time = getRealTime(Number(`${tournament["@date"]}000`));
 
-        if (!name || !network || !bid || !time) {
+        if (!name || !network || !bid || !time || name?.includes('global million')) {
           return;
         }
 

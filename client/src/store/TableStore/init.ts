@@ -14,6 +14,7 @@ import {
   $onlyKO,
   $onlyTurbo,
   $time,
+  $alias,
   $onlyNormal,
   $timezone,
   handleChangeTimezoneTable,
@@ -33,9 +34,11 @@ export const fetchUserReposFx = createEffect(async () => {
     onlyKO = $onlyKO.getState(),
     onlyTurbo = $onlyTurbo.getState(),
     onlyFreezout = $onlyFreezout.getState(),
-    onlyNormal = $onlyNormal.getState();
+    onlyNormal = $onlyNormal.getState(),
+    alias = $alias.getState();
 
   if (!level) ErrNot("Level filter: You have not chosen a level");
+  if (!alias) ErrNot("Enter an alias");
   if (!network?.length)
     ErrNot("Network filter: You have not selected a network");
   if (!time) ErrNot("Time is less filter: You haven't chosen the time");
@@ -50,6 +53,7 @@ export const fetchUserReposFx = createEffect(async () => {
 
   if (
     !level ||
+    !alias ||
     !network?.length ||
     !time ||
     !moneyStart ||
@@ -74,6 +78,7 @@ export const fetchUserReposFx = createEffect(async () => {
       onlyFreezout,
       onlyNormal,
       timezone,
+      alias,
     });
 
     handleChangeTimezoneTable($timezone.getState()?.label ?? "");

@@ -19,7 +19,8 @@ const increaseProperties = (tournament) => {
     Math.max(
       Number(tournament["@guarantee"] ?? 0),
       Number(tournament["@prizePool"] ?? 0),
-      Number(tournament["@entrants"] ?? 0) * Number(tournament["@stake"] ?? 0)
+      Number(tournament["@entrants"] ?? 0) * Number(tournament["@stake"] ?? 0),
+      Number(tournament["@totalEntrants"] ?? 0) * Number(tournament["@stake"] ?? 0),
     )
   );
 

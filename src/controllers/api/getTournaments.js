@@ -6,6 +6,7 @@ const { startDay } = require("../../helpers/startDay");
 const { readFile } = require("../../utils/promisify");
 const { getRealTime } = require("../../helpers/getRealTime");
 const { networkDefinition } = require("../../helpers/networkDefinition");
+const { updateAliasStore } = require("../../modules/updateAliasStore");
 
 module.exports = async (req, res) => {
   try {
@@ -19,6 +20,9 @@ module.exports = async (req, res) => {
     const moneyEnd = req.query.moneyEnd;
     const level = req.query.level;
     const timezone = req.query.timezone;
+    const alias = req.query.alias;
+
+    updateAliasStore(alias);
 
     const ability1 = JSON.parse(
       await readFile("src/store/ability1/ability1.json")
@@ -28,7 +32,9 @@ module.exports = async (req, res) => {
     );
     const gaps = JSON.parse(await readFile("src/store/gaps/gap.json"));
     const rules = JSON.parse(await readFile("src/store/rules/rules.json"));
-
+    console.log(
+      `https://www.sharkscope.com/api/pocarrleaderboard/networks/${networks}/activeTournaments?filter=Date!:${time}S;Type:NL,H;Type!:SAT;Class:SCHEDULED,SNG;`
+    );
     console.log("Начинаю делать запрос");
     let result = (
       await api.get(
@@ -96,9 +102,9 @@ module.exports = async (req, res) => {
         const gap = gaps?.[level]?.[network]?.[statusGap]?.[bid];
         const realBid = gap ? gap : bid;
         const abilityBid =
-          ability2WithoutName[timezone]?.[network]?.[level]?.[currency]?.[
-            realBid
-          ]?.[status];
+          ability2WithoutName?.[network]?.[level]?.[currency]?.[realBid]?.[
+            status
+          ];
 
         //Фикс гарантии для WPN и 888Poker
         if (network === "WPN" || network === "888") {
@@ -113,6 +119,9 @@ module.exports = async (req, res) => {
         const prizepool = Math.round(
           Math.max(
             Number(tournament["@guarantee"] ?? 0),
+            Number(tournament["@prizePool"] ?? 0),
+            Number(tournament["@entrants"] ?? 0) *
+              Number(tournament["@stake"] ?? 0),
             Number(tournament["@totalEntrants"] ?? 0) *
               Number(tournament["@stake"] ?? 0)
           )
@@ -163,9 +172,18 @@ module.exports = async (req, res) => {
     console.log(result.length);
     result = await asyncFilter(result, async (tournament) => {
       const bounty = tournament["@flags"]?.includes("B");
-      const turbo = tournament["@turbo"];
+      const network = networkDefinition(tournament["@network"]);
+      const turbo =
+        network === "WNMX"
+          ? tournament["@turbo"] || tournament["@superturbo"]
+          : tournament["@turbo"];
+
 
       const status = await filterLevelByAbility(level, tournament);
+
+      // if(tournament['@name'].includes('Final')){
+      //   console.log(tournament)
+      // }
 
       return (
         tournament["@bid"] >= Number(moneyStart) &&

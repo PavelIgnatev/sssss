@@ -6,6 +6,7 @@ const {
   MELEME: meleme,
   EI: ei,
   StartDay: sd,
+  I,
 } = require("./curry");
 const { filterLevelByWord } = require("./filterLevelByWord");
 
@@ -22,7 +23,8 @@ const filterLevelByRules = (level, item) => {
     EMEI = emei(name)(bid)(prizepool),
     MELEME = meleme(bid)(prizepool),
     EI = ei(name)(bid),
-    StartDay = sd(weekDay);
+    StartDay = sd(weekDay),
+    eI = I(name);
 
   if (!name) return false;
   //Фильтр снг для румов, отличных от PS.eu
@@ -104,9 +106,12 @@ const filterLevelByRules = (level, item) => {
       //Турик в определнный день недели
       if (
         EI(50.0)("global million") &&
-        (StartDay("Friday") || StartDay("Saturday") || StartDay("Sunday"))
+        (StartDay("Friday") || StartDay("Saturday") || StartDay("Sunday")) &&
+        (eI("[final ") || eI("[day"))
       )
         return true;
+
+      if (EI(210)("zodiac bounty million") && !eI("stage")) return false;
 
       //Коричневые
       if (EMEI(150)(175000)("ggmasters")) return true;
@@ -362,17 +367,19 @@ const filterLevelByRules = (level, item) => {
       //Турик в определнный день недели
       if (
         EI(50.0)("global million") &&
-        (StartDay("Saturday") || StartDay("Sunday"))
+        (StartDay("Saturday") || StartDay("Sunday")) &&
+        (eI("[final") || eI("[day"))
       )
         return true;
       if (
-        EI(200)("zodiac million") &&
-        !(
-          StartDay("Thursday") ||
-          StartDay("Friday") ||
-          StartDay("Saturday") ||
-          StartDay("Sunday")
-        )
+        (EI(210)("zodiac bounty million") &&
+          !(
+            StartDay("Thursday") ||
+            StartDay("Friday") ||
+            StartDay("Saturday") ||
+            StartDay("Sunday")
+          )) ||
+        (EI(210)("zodiac bounty million") && !eI("stage"))
       )
         return false;
 
@@ -613,17 +620,19 @@ const filterLevelByRules = (level, item) => {
   //     //Турик в определнный день недели
   //     if (
   //       EI(50.0)("global million") &&
-  //       (StartDay("Saturday") || StartDay("Sunday"))
+  //       (StartDay("Saturday") || StartDay("Sunday")) &&
+  // (eI("[final ") || eI("[day"))
   //     )
   //       return true;
   //     if (
-  //       EI(200)("zodiac million") &&
+  //       EI(210)("zodiac bounty million") &&
   //       !(
   //         StartDay("Thursday") ||
   //         StartDay("Friday") ||
   //         StartDay("Saturday") ||
   //         StartDay("Sunday")
-  //       )
+  //       ) ||
+  // (EI(210)("zodiac bounty million") && !eI("stage"))
   //     )
   //       return false;
 
@@ -867,12 +876,14 @@ const filterLevelByRules = (level, item) => {
   //     }
   //   } else if (network === "GG") {
   //     //Турик в определнный день недели
-  //     if (EI(50.0)("global million") && StartDay("Sunday")) return true;
-  //     if (
-  //       EI(200)("zodiac million") &&
-  //       !(StartDay("Friday") || StartDay("Saturday") || StartDay("Sunday"))
-  //     )
-  //       return false;
+  //     if (EI(50.0)("global million") && StartDay("Sunday") &&
+  // (eI("[final ") || eI("[day"))) return true;
+  // if (
+  //   (EI(210)("zodiac bounty million") &&
+  //     !(StartDay("Friday") || StartDay("Saturday") || StartDay("Sunday"))) ||
+  //   (EI(210)("zodiac bounty million") && !eI("stage"))
+  // )
+  //   return false;
 
   //     //Коричневые
   //     if (EMEI(150)(400000)("ggmasters")) return true;

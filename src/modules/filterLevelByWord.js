@@ -4,7 +4,12 @@ const filterLevelByWord = (network, name) => {
   const I = i(name);
 
   if (network === "PS.eu") {
-    if (I("hyper") || I("short: 15bb") || (I("sat") && !I("saturday")) || I('on demand'))
+    if (
+      I("hyper") ||
+      I("short: 15bb") ||
+      (I("sat") && !I("saturday")) ||
+      I("on demand")
+    )
       return true;
   } else if (network === "GG") {
     if (
@@ -19,9 +24,7 @@ const filterLevelByWord = (network, name) => {
       I("t$ builder") ||
       I("sit & go") ||
       I("aof") ||
-      (I("sat") && !I("saturday")) ||
-      I("global million") || 
-      I("zodiac million")
+      (I("sat") && !I("saturday"))
     )
       return true;
   } else if (network === "PS.es") {

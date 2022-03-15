@@ -1,9 +1,27 @@
 .Page {
   display: flex;
+  margin-bottom: 5px;
+}
+
+.Page div div div div {
+  overflow: initial;
+  text-overflow: initial;
+  white-space: initial;
+}
+
+span[aria-relevant="additions text"] + div {
+  height: 100%;
+}
+.Page > div {
+  min-width: 100px;
+}
+
+.Page div input {
+  height: 100%;
 }
 
 .name {
-  min-width: 200px;
+  min-width: 250px !important;
 }
 
 .button {
@@ -24,8 +42,7 @@
   padding: 2px 8px;
   max-width: 80px;
   width: 100%;
-  margin-left: 3px;
-  margin-bottom: 5px;
+  margin-left: 6px;
   &:focus,
   &:active {
     outline: none;

@@ -15,14 +15,9 @@ const filterLevelByRulesWithoutBrown = (level, item) => {
     isKO = item["@bounty"],
     bid = Number(item["@bid"]),
     prizepool = Number(item["@prizepool"]),
-    weekDay = item["@startDay"],
     MELE = mele(bid),
-    MELEI = melei(name)(bid),
     EME = eme(bid)(prizepool),
-    EMEI = emei(name)(bid)(prizepool),
-    MELEME = meleme(bid)(prizepool),
-    EI = ei(name)(bid),
-    StartDay = sd(weekDay);
+    MELEME = meleme(bid)(prizepool)
 
   if (!name || item["@sng"]) return false;
 

@@ -3,6 +3,7 @@ import {
   $level,
   $moneyEnd,
   $moneyStart,
+  handleChangeAlias,
   handleChangeDateEnd,
   handleChangeDateStart,
   handleChangeIsMakeupB,
@@ -30,6 +31,7 @@ import {
   $onlyNormal,
   $stateMakeup,
   $stateTimezone,
+  $alias,
 } from "../../store/SelectStore/state";
 import { useStore } from "effector-react";
 import { BaseSelect } from "../BaseSelect/BaseSelect";
@@ -41,6 +43,7 @@ import classes from "./BaseHeader.module.scss";
 import { BaseInputMask } from "../BaseInputMask";
 import { ComponentCategory } from "../ComponentCategory";
 import { $ability2Step, fetchSettings } from "../../store/Settings";
+import classNames from "classnames";
 
 export const BaseHeader: FC = () => {
   const moneyStart = useStore($moneyStart),
@@ -53,7 +56,8 @@ export const BaseHeader: FC = () => {
     dateEnd = useStore($dateEnd),
     onlyFreezout = useStore($onlyFreezout),
     onlyNormal = useStore($onlyNormal),
-    networkLength = useStore($network)?.length ?? 0;
+    networkLength = useStore($network)?.length ?? 0,
+    alias = useStore($alias);
 
   return (
     <header className={classes.wrapper}>
@@ -169,6 +173,21 @@ export const BaseHeader: FC = () => {
               options={$stateTimezone}
               onChange={handleChangeTimezone}
               placeholder="Timezone"
+            />
+          </ComponentCategory>
+          <ComponentCategory
+            category="Alias"
+            gorizontal
+            className={classes.alias}
+          >
+            <input
+              type="text"
+              value={alias}
+              className={classNames(classes.input, classes.inputAlias)}
+              placeholder="Your alias"
+              onChange={({ currentTarget: { value } }) =>
+                handleChangeAlias(value)
+              }
             />
           </ComponentCategory>
         </div>
